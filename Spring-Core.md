@@ -259,7 +259,11 @@ public class AppConfig {}
 ```
 
 ### Additional features:
-- You can also provide a default value if the property is not found:javaCopy code@Value("${app.name:DefaultAppName}") private String appName;
+- You can also provide a default value if the property is not found:
+   ```java
+   @Value("${app.name:DefaultAppName}")
+   private String appName;
+   ```
 - The @Value annotation can be used for injecting more complex types, such as lists or maps, by providing comma-separated dddds or using Spring’s SpEL (Spring Expression Language).
 
 ## Depends-on:
@@ -751,8 +755,8 @@ public class SimpleMovieLister {
 ## Prototype inside Singleton:
 
 Injecting a prototype bean into a singleton bean in Spring creates a single instance of the prototype at startup, defeating its purpose.
-To get a new prototype instance every time, use @Lookup,ObjectFactory<T, or scoped proxies.
-The direct @Autowired approach fails because the singleton is initialized once, capturing the initial prototype instance.
+To get a new prototype instance every time, use `@Lookup`, `ObjectFactory<T>`, `ObjectProvider<T>`, `Provider<T>`, or scoped proxies.
+The direct `@Autowired` approach fails because the singleton is initialized once, capturing the initial prototype instance.
 
 ### @Lookup Annotation (Recommended):
 ```java
@@ -766,7 +770,7 @@ public class SingletonBean {
 }
 ```
 
-### ObjectFactory<T>
+### ObjectFactory\<T>
 ```java
 @Component
 @Scope("prototype")
@@ -795,6 +799,94 @@ public class ReportService {
     }
 }
 ```
+
+### ObjectProvider\<T>
+
+`ObjectProvider<T>` is a Spring-specific extension of `ObjectFactory<T>` introduced in Spring 4.3. It adds **lazy resolution**, **optional dependency handling**, and **stream-based retrieval** — making it the most flexible Spring-native option.
+
+```java
+@Component
+@Scope("prototype")
+public class ReportGenerator {
+    private final String id = UUID.randomUUID().toString();
+
+    public void generate(String reportName) {
+        System.out.printf("[%s] Generating report: %s%n", id, reportName);
+    }
+}
+```
+
+```java
+@Component
+public class ReportService {
+
+    private final ObjectProvider<ReportGenerator> generatorProvider;
+
+    @Autowired
+    public ReportService(ObjectProvider<ReportGenerator> generatorProvider) {
+        this.generatorProvider = generatorProvider;
+    }
+
+    public void runReport(String reportName) {
+        // getObject() creates a fresh prototype instance each time
+        generatorProvider.getObject().generate(reportName);
+    }
+
+    public void runIfAvailable(String reportName) {
+        // Does not throw if the bean is missing — safe for optional dependencies
+        generatorProvider.ifAvailable(gen -> gen.generate(reportName));
+    }
+}
+```
+
+> **`ObjectFactory<T>` vs `ObjectProvider<T>`**: Prefer `ObjectProvider<T>` in modern Spring applications. It is a strict superset — it won't throw a `NoSuchBeanDefinitionException` when the bean is absent (use `ifAvailable` / `getIfAvailable`), and it supports iterating over multiple matching beans via `stream()`.
+
+### Provider\<T> (JSR-330 Standard)
+
+`javax.inject.Provider<T>` (or `jakarta.inject.Provider<T>` in Jakarta EE) is the **standards-based** equivalent from JSR-330. It works identically to `ObjectFactory<T>` but keeps your code decoupled from Spring-specific APIs — useful in portable or framework-agnostic components.
+
+```xml
+<!-- Add JSR-330 dependency if not already present -->
+<dependency>
+    <groupId>javax.inject</groupId>
+    <artifactId>javax.inject</artifactId>
+    <version>1</version>
+</dependency>
+```
+
+```java
+@Component
+@Scope("prototype")
+public class ReportGenerator {
+    private final String id = UUID.randomUUID().toString();
+
+    public void generate(String reportName) {
+        System.out.printf("[%s] Generating report: %s%n", id, reportName);
+    }
+}
+```
+
+```java
+import javax.inject.Provider;
+
+@Component
+public class ReportService {
+
+    private final Provider<ReportGenerator> generatorProvider;
+
+    @Autowired
+    public ReportService(Provider<ReportGenerator> generatorProvider) {
+        this.generatorProvider = generatorProvider;
+    }
+
+    public void runReport(String reportName) {
+        // get() creates a fresh prototype instance on every call
+        generatorProvider.get().generate(reportName);
+    }
+}
+```
+
+> **When to use `Provider<T>`**: Choose it when writing library code or components that must remain Spring-agnostic. For application code already tied to Spring, `ObjectProvider<T>` is generally preferred due to its richer API.
 
 ### Scoped Proxy
 
@@ -831,25 +923,17 @@ public class NotificationService {
 Because the singleton bean is created only once at application startup, the prototype bean is injected into it only at that time.
 Consequently, the same prototype instance is reused for all subsequent calls, nullifying its intended per-request lifecycle.
 
-## Conditional Beans:
+---
 
-In Spring, conditional beans allow the application context to dynamically decide at startup whether to register a specific bean
-based on certain criteria. This mechanism is the foundation of Spring Boot’s autoconfiguration and is essential for creating environment-aware
-and modular applications. 
+**Quick Comparison**:
 
-### Key Conditional Annotations:
-
-Spring Boot provides a suite of pre-defined @ConditionalOn... annotations to handle common scenarios:
-
-| Annotation                | Condition                                               | Example use-case                                    |
-|---------------------------|---------------------------------------------------------|-----------------------------------------------------|
-| @ConditionalOnProperty    | A configuration property exists and/or matches a value. | Enabling features via application.properties.       |
-| @ConditionalOnClass       | A specific class is present on the classpath.           | Optional library support (e.g., Kafka, Redis).      |
-| @ConditionalOnBean        | A specific bean already exists in the context.          | Dependent services or secondary configurations.     |
-| @ConditionalOnMissingBean | A specific bean is not already in the context.          | Providing default "fallback" implementations.       |
-| @ConditionalOnExpression  | A SpEL (Spring Expression Language) expression is true  | Complex conditions involving multiple properties.   |
-| @Profile                  | A specific Spring profile (e.g., dev, prod) is active.  | Environment-specific database or security configs.  |
-
+| Approach          | Type    | New instance per call | Optional/safe | Framework-agnostic |
+|-------------------|---------|-----------------------|---------------|--------------------|
+| `@Lookup`         | Spring  | +                     | -             | -                  |
+| `ObjectFactory<T>`| Spring  | +                     | -             | -                  |
+| `ObjectProvider<T>`| Spring | +                     | +             | -                  |
+| `Provider<T>`     | JSR-330 | +                     | -             | +                  |
+| Scoped Proxy      | Spring  | +                     | -             | -                  |
 ### Custom Conditions
 
 For logic not covered by built-in annotations, you can create a custom condition by implementing the Condition interface.
