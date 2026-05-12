@@ -511,6 +511,61 @@ LinkedList<String> list = new LinkedList<>();
 
 Using raw types (without type parameters) is allowed but not recommended.
 
+### Type Bounds
+
+Type parameters can be constrained using `extends` and `super`.
+
+**Upper bounded** (`<T extends Type>`) — `T` must be `Type` or a subtype of it:
+
+```java
+// Accepts Number, Integer, Double, etc.
+public <T extends Number> double sum(List<T> list) { ... }
+```
+
+**Lower bounded** (`<T super Type>`) — `T` must be `Type` or a supertype of it. Only valid with wildcards (see below).
+
+### Wildcards (`?`)
+
+A wildcard represents an unknown type. Used in variable declarations and method parameters — **not** in class or method definitions.
+
+| Wildcard | Meaning | Use case |
+|---|---|---|
+| `<?>` | Any type (unbounded) | Read-only; only `Object` methods available |
+| `<? extends T>` | `T` or any subtype (upper bound) | Reading from a structure — **producer** |
+| `<? super T>` | `T` or any supertype (lower bound) | Writing into a structure — **consumer** |
+
+```java
+List<? extends Number> producers = List.of(1, 2.0, 3L); // can read as Number
+List<? super Integer> consumers = new ArrayList<Number>(); // can write Integer
+```
+
+### PECS — Producer Extends, Consumer Super
+
+A useful mnemonic for choosing the right wildcard:
+
+- Use `<? extends T>` when you only **read** from the collection (it produces `T`s).
+- Use `<? super T>` when you only **write** into the collection (it consumes `T`s).
+- Use `<?>` when you do neither (e.g., just printing elements).
+```java
+// Copies elements from src into dst
+public <T> void copy(List<? super T> dst, List<? extends T> src) {
+    for (T item : src) dst.add(item);
+}
+```
+
+### Type Erasure
+
+Generic type information exists only at compile time. At runtime, the JVM erases type parameters and replaces them with their bounds (or `Object` if unbounded). This means:
+
+- `List<String>` and `List<Integer>` are the same type at runtime (`List`).
+- You cannot use `instanceof` with parameterized types: `obj instanceof List<String>` is a compile error.
+- You cannot create generic arrays: `new T[]` is not allowed.
+- You cannot instantiate a type parameter directly: `new T()` is not allowed.
+```java
+// At runtime, both are just List — this causes an "unchecked cast" warning
+List<String> strings = (List<String>) someRawList;
+```
+ 
 ---
 
 ## Proxies: JDK Dynamic Proxy vs CGLIB
