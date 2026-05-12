@@ -1,7 +1,7 @@
 # Spring Core
 
 ## Creating  and managing Beans:
-To create a Bean you simply create a POJO class, example:
+To create a Bean, you simply create a POJO class, for example:
 
 ```java
 public class TestBean {
@@ -18,7 +18,7 @@ public class TestBean {
 }
 ```
 
-You will also need configuration class which will be responsible for creation and configuration of Beans:
+You will also need a configuration class which will be responsible for creation and configuration of Beans:
 
 ```java
 @Configuration
@@ -34,7 +34,9 @@ public class AppConfig {
 ```
 
 @ComponentScan annotation specifies package where the Beans are located.
-You specify all your beans in methods with annotation @Bean. These methods usually just return a new object of the class, but you can configure how the beans are created here. You can also specify Beans scope here (Singleton, Prototype etc.)
+You specify all your beans in methods with annotation @Bean.
+These methods usually just return a new object of the class, but you can configure how the beans are created here.
+You can also specify Beans scope here (Singleton, Prototype, etc.)
 
 And then you can create context object:
 
@@ -50,10 +52,11 @@ public class CoreApplication {
 }
 ```
 
-Context object can be used to get the beans from IoC.
+Context object can be used to get the beans from the IoC.
 
-Within the IoC itself beans are stored as BeanDefinition objects which among other things contain the following metadata:
-- A package-qualified class name: typically, the actual implementation class of the bean being defined.
+Within the IoC itself,
+beans are stored as BeanDefinition objects which among other things contain the following metadata:
+- A package-qualified class name: typically, the actual implementation class of the bean is defined.
 - Bean behavioral configuration elements, which state how the bean should behave in the container (scope, lifecycle callbacks, and so forth).
 - References to other beans that are needed for the bean to do its work. These references are also called collaborators or dependencies.
 - Other configuration settings to set in the newly created object - for example, the size limit of the pool or the number of connections to use in a bean that manages a connection pool.
@@ -81,7 +84,7 @@ userDao, loginController, and so forth.
 Naming beans consistently makes your configuration easier to read and understand. Also, if you use Spring AOP,
 it helps a lot when applying advice to a set of beans related by name.
 
-You can getBean by specifying its name:
+You can `getBean` by specifying its name:
 
 ```java
 public class CoreApplication {
@@ -191,7 +194,7 @@ constructor injection with programmatic validation of arguments is preferable.
 ### Circular dependencies
 
 If you use predominantly constructor injection, it is possible to create an unresolvable circular dependency scenario.
-For example: Class A requires an instance of class B through constructor injection, and class B requires an instance of
+For example, Class A requires an instance of class B through constructor injection, and class B requires an instance of
 class A thorough constructor injection. If you configure beans for classes A and B to be injected into each other,
 the Spring IoC container detects this circular reference at runtime, and throws a BeanCurrentlyInCreationException.
 
@@ -249,7 +252,7 @@ public class MyAppConfig {
 }
 ```
 
-For non boot applications you need to specify property source in Config class:
+For non boot applications, you need to specify property source in Config class:
 
 ```java
 @Configuration
@@ -266,7 +269,7 @@ public class AppConfig {}
    ```
 - The @Value annotation can be used for injecting more complex types, such as lists or maps, by providing comma-separated dddds or using Spring’s SpEL (Spring Expression Language).
 
-## Depends-on:
+## Depends on:
 The depends-on attribute in XML forces a specific initialization order. With annotations, @DependsOn can be used to achieve the same effect. 
 
 ```java
@@ -284,7 +287,7 @@ automatically for your bean by inspecting the contents of the ApplicationContext
 Autowiring has the following advantages:
 
 - Autowiring can significantly reduce the need to specify properties or constructor arguments. (Other mechanisms such as a bean template discussed elsewhere in this chapter are also valuable in this regard.)
-- Autowiring can update a configuration as your objects evolve. For example, if you need to add a dependency to a class, that dependency can be satisfied automatically without you needing to modify the configuration. Thus autowiring can be especially useful during development, without negating the option of switching to explicit wiring when the code base becomes more stable.
+- Autowiring can update a configuration as your objects evolve. For example, if you need to add a dependency to a class, that dependency can be satisfied automatically without you needing to modify the configuration. Thus, autowiring can be especially useful during development, without negating the option of switching to explicit wiring when the code base becomes more stable.
 
 When using XML-based configuration metadata (see Dependency Injection), you can specify the autowire mode for a bean definition with the autowire attribute of the <bean/> element. The autowiring functionality has four modes. You specify autowiring per bean and can thus choose which ones to autowire. The following table describes the four autowiring modes:
 Table 2. Autowiring modes
@@ -298,7 +301,7 @@ Table 2. Autowiring modes
 
 With byType or constructor autowiring mode, you can wire arrays and typed collections. In such cases, all autowire candidates within the container that match the expected type are provided to satisfy the dependency. You can autowire strongly-typed Map instances if the expected key type is String.
 
-To use the @Autowired annotation we first need to specify base package:
+To use the @Autowired annotation, we first need to specify base package:
 
 ```java
 @Configuration
@@ -488,9 +491,9 @@ public class MyBean {
 
 | Step | What to do                                                             |
 |------|------------------------------------------------------------------------|
-| 1 | Implement `org.springframework.beans.factory.config.Scope` (4 methods) |
-| 2 | Register with `beanFactory.registerScope("name", scopeInstance)`       |
-| 3 | Annotate beans with `@Scope("name")` or set `scope="name"` in XML      |
+| 1    | Implement `org.springframework.beans.factory.config.Scope` (4 methods) |
+| 2    | Register with `beanFactory.registerScope("name", scopeInstance)`       |
+| 3    | Annotate beans with `@Scope("name")` or set `scope="name"` in XML      |
 
 ## Customizing the nature of the Beans:
 
@@ -511,7 +514,9 @@ public class CachingMovieLister {
 }
 ```
 
-@PostConstruct will be called after initialization and @PreDestroy before destruction. Neither of them is allowed to have any kind of argument as they are lifecycle callback methods triggered automatically. If you want pass an argument during initialization you can achieve a similar resutl by using @Autowired on a method:
+@PostConstruct will be called after initialization and @PreDestroy before destruction.
+Neither of them is allowed to have any kind of argument as they are lifecycle callback methods triggered automatically.
+If you want to pass an argument during initialization, you can achieve a similar result by using @Autowired on a method:
 
 ```java
 @Autowired
@@ -725,7 +730,10 @@ public class MyService {
 }
 ```
 
-The same is true for list of beans with only difference being autowiring a specific list bean. If you want to autowire an actual bean that returns a list you should make it return ArrayList instead List interface and also request an ArrayList bean. This way Spring will inject your specific bean instead of list of beans.
+The same is true for list of beans with only difference being autowiring a specific list bean.
+If you want to autowire an actual bean that returns a list,
+you should make it return ArrayList instead List interface and also request an ArrayList bean.
+This way, Spring will inject your specific bean instead of list of beans.
 
 #### `@Primary`:
 
@@ -927,13 +935,13 @@ Consequently, the same prototype instance is reused for all subsequent calls, nu
 
 **Quick Comparison**:
 
-| Approach          | Type    | New instance per call | Optional/safe | Framework-agnostic |
-|-------------------|---------|-----------------------|---------------|--------------------|
-| `@Lookup`         | Spring  | +                     | -             | -                  |
-| `ObjectFactory<T>`| Spring  | +                     | -             | -                  |
-| `ObjectProvider<T>`| Spring | +                     | +             | -                  |
-| `Provider<T>`     | JSR-330 | +                     | -             | +                  |
-| Scoped Proxy      | Spring  | +                     | -             | -                  |
+| Approach            | Type    | New instance per call | Optional/safe | Framework-agnostic |
+|---------------------|---------|-----------------------|---------------|--------------------|
+| `@Lookup`           | Spring  | +                     | -             | -                  |
+| `ObjectFactory<T>`  | Spring  | +                     | -             | -                  |
+| `ObjectProvider<T>` | Spring  | +                     | +             | -                  |
+| `Provider<T>`       | JSR-330 | +                     | -             | +                  |
+| Scoped Proxy        | Spring  | +                     | -             | -                  |
 ### Custom Conditions
 
 For logic not covered by built-in annotations, you can create a custom condition by implementing the Condition interface.
@@ -1245,12 +1253,12 @@ public class MyService {
 
 ### Comparison Table
 
-| Approach | Spring Version | When to Use                                          |
-|---|---|------------------------------------------------------|
-| `BeanRegistrar` | Boot 4.0+ / Framework 7.0+ | Cleanest modern API; environment-driven registration |
-| `ImportBeanDefinitionRegistrar` | Boot 2.x / 3.x | Library authors; annotation metadata inspection      |
-| `BeanDefinitionRegistryPostProcessor` | Any | Early lifecycle; property-driven bulk registration   |
-| `GenericApplicationContext` | Any | Runtime / on-the-fly registration after startup      |
+| Approach                              | Spring Version             | When to Use                                          |
+|---------------------------------------|----------------------------|------------------------------------------------------|
+| `BeanRegistrar`                       | Boot 4.0+ / Framework 7.0+ | Cleanest modern API; environment-driven registration |
+| `ImportBeanDefinitionRegistrar`       | Boot 2.x / 3.x             | Library authors; annotation metadata inspection      |
+| `BeanDefinitionRegistryPostProcessor` | Any                        | Early lifecycle; property-driven bulk registration   |
+| `GenericApplicationContext`           | Any                        | Runtime / on-the-fly registration after startup      |
 
 ## @PostConstruct vs Bean init-method:
 
