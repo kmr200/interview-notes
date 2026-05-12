@@ -14,6 +14,8 @@ In other words, ORM is a programming technique that maps objects to data stored 
 
 JPA acts as a bridge between object-oriented domain models and relational database systems. Being a specification, JPA doesn't perform any operation by itself — it requires an implementation. ORM tools like Hibernate, TopLink, and iBatis implement the JPA specification for data persistence.
 
+![orm.jpg](images/orm.jpg)
+
 ---
 
 ## Hibernate
@@ -278,6 +280,8 @@ new/transient → [persist] → managed → [remove] → removed
                                 ↓
                            detached → [merge] → managed
 ```
+
+![jpa-entity-lifecycle.png](images/jpa-entity-lifecycle.png)
 
 | State         | Description                                                                                 |
 |---------------|---------------------------------------------------------------------------------------------|
