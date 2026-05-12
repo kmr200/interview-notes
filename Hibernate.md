@@ -6,6 +6,8 @@
 
 In other words, ORM is a programming technique that maps objects to data stored in a database.
 
+![orm.jpg](images/orm.jpg)
+
 ---
 
 ## JPA
@@ -13,8 +15,6 @@ In other words, ORM is a programming technique that maps objects to data stored 
 **JPA (Java Persistence API)** is a Java specification for accessing, managing, and persisting data between Java objects and relational databases. It is the standard approach for Object-Relational Mapping in Java.
 
 JPA acts as a bridge between object-oriented domain models and relational database systems. Being a specification, JPA doesn't perform any operation by itself — it requires an implementation. ORM tools like Hibernate, TopLink, and iBatis implement the JPA specification for data persistence.
-
-![orm.jpg](images/orm.jpg)
 
 ---
 
