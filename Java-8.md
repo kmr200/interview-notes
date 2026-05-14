@@ -2,7 +2,7 @@
 
 ## Lambda
 
-### What is a "lambda"? What is the structure and usage specifics of a lambda expression?
+### What is a "lambda"? What are the structure and usage specifics of a lambda expression?
 
 A lambda represents a set of instructions that can be stored in a variable and called multiple times in different parts of the program.
 
@@ -120,11 +120,18 @@ Access to variables from the outer scope in a lambda is similar to access from a
 
 **1. Lifetime of Variables (Stack vs. Heap)**
 
-Local variables are stored on the stack and destroyed as soon as the method that created them finishes. However, a lambda may outlive that method (e.g. passed to another thread). To prevent the lambda from accessing a variable that no longer exists, Java **captures (copies)** the value into the lambda object. By requiring the variable to be effectively final, Java ensures the copy and the original are always consistent.
+Local variables are stored on the stack and destroyed as soon as the method that created them finishes.
+However, a lambda may outlive that method (e.g., passed to another thread).
+To prevent the lambda from accessing a variable that no longer exists,
+Java **captures (copies)** the value into the lambda object.
+By requiring the variable to be effectively final, Java ensures the copy and the original are always consistent.
 
 **2. Thread Safety and Concurrency**
 
-Lambdas are often used in concurrent or parallel processing (e.g. parallel streams). If multiple threads could modify the same local variable, it would create data races. Requiring effective finality preserves the thread-safety guarantee that local variables are normally only accessible to the thread executing that method.
+Lambdas are often used in concurrent or parallel processing (e.g., parallel streams).
+If multiple threads could modify the same local variable, it would create data races.
+Requiring effective finality preserves the thread-safety guarantee
+that local variables are normally only accessible to the thread executing that method.
 
 > Note: Lambda expressions **cannot** call default methods of the functional interface they implement.
 
