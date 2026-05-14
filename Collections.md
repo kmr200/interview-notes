@@ -484,7 +484,7 @@ Arrays don't override `hashCode()` (computed from object identity, not contents)
 
 ### What is the worst-case complexity of `HashMap.get(key)`?
 
-O(N) — when multiple keys hash to the same bucket, creating a degenerate linked list. Since Java 8, buckets exceeding a threshold are converted to red-black trees, bounding worst-case to O(log N).
+O(N) — when multiple keys hash to the same bucket, creating a degenerate linked list. Since Java 8, buckets exceeding a threshold (8) are converted to red-black trees, bounding worst-case to O(log N).
 
 ---
 
@@ -561,7 +561,7 @@ for (Map.Entry<K, V> entry : map.entrySet()) {
 ### What are the differences between `TreeSet` and `HashSet`?
 
 - **`TreeSet`** — backed by a red-black tree; elements are always sorted. Basic operations are O(log N).
-- **`HashSet`** — backed by a `HashMap` (element serves as both key and value); no ordering guarantee. Basic operations are O(1) on average.
+- **`HashSet`** — backed by a `HashMap` (an element serves as both key and value); no ordering guarantee. Basic operations are O(1) on average.
 
 ---
 
@@ -625,7 +625,8 @@ List<T> syncList = Collections.synchronizedList(new ArrayList<>());
 
 > Manual synchronization is still required when iterating over the collection.
 
-Since Java 6, the JCF was extended with purpose-built concurrent collections such as `CopyOnWriteArrayList` and `ConcurrentHashMap`.
+Since Java 6,
+the JCF have been extended with purpose-built concurrent collections such as `CopyOnWriteArrayList` and `ConcurrentHashMap`.
 
 ---
 
