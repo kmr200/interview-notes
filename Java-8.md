@@ -133,7 +133,7 @@ Lambdas are often used in concurrent or parallel processing (e.g. parallel strea
 ```java
 public static List<String> sort(List<String> list) {
     Collections.sort(list, (a, b) -> a.compareTo(b));
-    return list; // Note: return the list, not `this`
+    return list;
 }
 ```
 
