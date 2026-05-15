@@ -253,7 +253,7 @@ The CAP theorem states that a distributed data system can guarantee at most **tw
 - **Availability (A)** — every request receives a response (not necessarily the most recent data).
 - **Partition Tolerance (P)** — the system continues operating even if network partitions cause some nodes to be unable to communicate.
 
-![cap-theory.png](images/databases/cap-theory.png)
+![cap-theory.png](../images/databases/cap-theory.png)
 
 Since network partitions are unavoidable in real distributed systems, the practical tradeoff is between **consistency and availability** during a partition:
 

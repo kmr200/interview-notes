@@ -6,7 +6,7 @@
 
 In other words, ORM is a programming technique that maps objects to data stored in a database.
 
-![orm.jpg](images/hibernate/orm.jpg)
+![orm.jpg](../images/hibernate/orm.jpg)
 
 ---
 
@@ -281,7 +281,7 @@ new/transient → [persist] → managed → [remove] → removed
                            detached → [merge] → managed
 ```
 
-![jpa-entity-lifecycle.png](images/hibernate/jpa-entity-lifecycle.png)
+![jpa-entity-lifecycle.png](../images/hibernate/jpa-entity-lifecycle.png)
 
 | State         | Description                                                                                 |
 |---------------|---------------------------------------------------------------------------------------------|

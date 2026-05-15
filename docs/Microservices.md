@@ -6,7 +6,7 @@
 
 A monolithic application packages all functionality – business logic, database access, messaging, UI – into a single deployable unit (e.g., a WAR file, a Rails directory hierarchy).
 
-![monolithic-architecture.png](images/microservices/monolithic-architecture.png)
+![monolithic-architecture.png](../images/microservices/monolithic-architecture.png)
 
 At the core is the business logic, surrounded by adapters that interface with the outside world: database access components, messaging components, and web/API components. Despite being logically modular, the entire application is deployed as one unit.
 
@@ -43,7 +43,7 @@ Instead of one large application, the system is split into a set of small, indep
 - Has its own database (database-per-service pattern).
 - Communicates via REST APIs or asynchronous messaging.
 
-![microservices-architecture.png](images/microservices/microservices-architecture.png)
+![microservices-architecture.png](../images/microservices/microservices-architecture.png)
 
 Each service instance typically runs as a Docker container on a cloud VM. An **API Gateway** sits in front, handling load balancing, caching, access control, metering, and monitoring – clients never talk directly to backend services.
 
@@ -51,7 +51,7 @@ Each service instance typically runs as a Docker container on a cloud VM. An **A
 
 Microservices correspond to **Y-axis scaling** on the Scale Cube:
 
-![scale-cube.png](images/microservices/scale-cube.png)
+![scale-cube.png](../images/microservices/scale-cube.png)
 
 | Axis       | Description                                                                           |
 |------------|---------------------------------------------------------------------------------------|
@@ -63,7 +63,7 @@ Applications typically use all three together.
 
 ### Deployment example (Docker on EC2)
 
-![dockerized-application.png](images/microservices/dockerized-application.png)
+![dockerized-application.png](../images/microservices/dockerized-application.png)
 
 Multiple instances of a service run as Docker containers across cloud VMs, with a load balancer (e.g., NGINX) in front distributing traffic.
 
@@ -71,7 +71,7 @@ Multiple instances of a service run as Docker containers across cloud VMs, with 
 
 Each service owns its own database schema – **polyglot persistence**: each service can use the database type best suited to its needs (e.g., a geo-query-optimized database for driver location lookups).
 
-![intro-microservices.png](images/microservices/intro-microservices.png)
+![intro-microservices.png](../images/microservices/intro-microservices.png)
 
 This approach causes some data duplication and conflicts with a unified enterprise data model, but is essential for loose coupling between services.
 
@@ -114,7 +114,7 @@ This approach causes some data duplication and conflicts with a unified enterpri
 
 SOA is a design paradigm where software components behave as **separate, autonomous, loosely coupled, network-accessible units** that communicate via standardized protocols.
 
-![Service-Oriented-Architecture.png](images/microservices/Service-Oriented-Architecture.png)
+![Service-Oriented-Architecture.png](../images/microservices/Service-Oriented-Architecture.png)
 
 **Loose coupling** means a client service can communicate with another service without being tightly bound to it – it only depends on a defined interface, not the implementation, language, or platform behind it.
 
@@ -142,13 +142,13 @@ How to implement transactions that span multiple services? (2PC - a two-phase co
 
 Implement each multiservice business transaction as a **saga** – a sequence of local transactions. Each local transaction updates its own database and publishes an event or message to trigger the next step. If a step fails, the saga executes **compensating transactions** to undo the changes made by preceding steps.
 
-![From_2PC_To_Saga.png](images/microservices/From_2PC_To_Saga.png)
+![From_2PC_To_Saga.png](../images/microservices/From_2PC_To_Saga.png)
 
 ### Two coordination approaches
 
 **1. Choreography** – each service listens for events and reacts by executing its local transaction and emitting the next event. No central coordinator.
 
-![Create_Order_Saga.png](images/microservices/Create_Order_Saga.png)
+![Create_Order_Saga.png](../images/microservices/Create_Order_Saga.png)
 
 Example flow (order creation):
 1. Order Service receives `POST /orders` → creates Order in `PENDING` state → emits `OrderCreated` event.
@@ -157,7 +157,7 @@ Example flow (order creation):
 
 **2. Orchestration** – a central saga orchestrator tells each service what to do and handles the overall flow.
 
-![Create_Order_Saga_Orchestration.png](images/microservices/Create_Order_Saga_Orchestration.png)
+![Create_Order_Saga_Orchestration.png](../images/microservices/Create_Order_Saga_Orchestration.png)
 
 Example flow (order creation):
 1. Order Service receives `POST /orders` → creates the saga orchestrator.
