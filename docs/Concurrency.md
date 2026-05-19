@@ -582,6 +582,174 @@ public final class ImmutableExample {
 
 ---
 
+Here's the content you can paste into your concurrency notes:
+
+---
+
+## Compare-And-Swap (CAS)
+
+### What is CAS?
+
+Compare-And-Swap (CAS) is a low-level atomic CPU instruction used to achieve thread-safe operations without locks. It is the foundation of Java's non-blocking concurrency utilities in `java.util.concurrent.atomic`.
+
+The operation takes three arguments:
+
+- **Memory location** — the variable to update.
+- **Expected value** — the value the variable is assumed to currently hold.
+- **New value** — the value to write if the assumption holds.
+
+The CPU atomically checks whether the current value matches the expected value, and only then writes the new value. The entire check-and-set happens as a single, uninterruptible hardware instruction.
+
+Pseudocode:
+
+```
+if (currentValue == expectedValue) {
+    currentValue = newValue;
+    return true;   // success
+} else {
+    return false;  // another thread changed it first
+}
+```
+
+In Java, CAS is exposed through the `Atomic*` classes and, at a lower level, via `VarHandle` (Java 9+) and `sun.misc.Unsafe`.
+
+```java
+AtomicInteger counter = new AtomicInteger(0);
+
+// Succeeds — current value is 0, updates to 1
+boolean success = counter.compareAndSet(0, 1);
+
+// Fails — current value is now 1, not 0
+boolean failure = counter.compareAndSet(0, 99);
+```
+
+---
+
+### How CAS Works Internally
+
+Instead of acquiring a lock, a thread using CAS follows a retry loop:
+
+1. Read the current value.
+2. Compute the new value.
+3. Attempt CAS — if it succeeds, done.
+4. If it fails (another thread changed the value), go back to step 1 and retry.
+
+This pattern is called an **optimistic spin loop** or **compare-and-swap loop**:
+
+```java
+AtomicInteger value = new AtomicInteger(0);
+
+public void increment() {
+    int current;
+    do {
+        current = value.get();
+    } while (!value.compareAndSet(current, current + 1));
+}
+```
+
+This is exactly how `AtomicInteger.incrementAndGet()` works under the hood.
+
+---
+
+### Tradeoffs
+
+| Aspect                                   | Detail                                                                                                                                                                         |
+|------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **No locks**                             | Threads never block — no mutex acquisition, no context switching.                                                                                                              |
+| **High throughput under low contention** | When conflicts are rare, CAS nearly always succeeds on the first try.                                                                                                          |
+| **Spin waste under high contention**     | When many threads compete on the same variable, repeated CAS failures burn CPU cycles in busy-wait loops.                                                                      |
+| **Not suitable for compound operations** | CAS protects a single memory location. Operations spanning multiple variables still require locks or other coordination.                                                       |
+| **Progress guarantee**                   | CAS provides *lock-freedom* — at least one thread always makes progress, even if others keep retrying. This is stronger than a mutex, where a sleeping thread blocks everyone. |
+| **Hardware dependency**                  | Relies on the CPU providing an atomic CAS instruction (virtually universal on modern x86/ARM).                                                                                 |
+
+**Rule of thumb:** prefer CAS-based atomics for simple, frequently-updated counters and flags under moderate contention. For high-contention scenarios, consider `LongAdder` / `LongAccumulator`, which reduce contention by striping the value across multiple cells.
+
+---
+
+### The ABA Problem
+
+#### What is it?
+
+The ABA problem is a subtle correctness bug that can occur when using CAS. It happens when:
+
+1. Thread A reads a value of **A**.
+2. Thread B changes the value from **A → B → A** (back to A).
+3. Thread A performs CAS expecting **A** — it succeeds, even though the value was changed in between.
+
+From CAS's perspective, the value looks unchanged, but the state of the system may have changed meaningfully. The operation proceeds as if nothing happened, which can lead to silent data corruption.
+
+---
+
+### Solutions to the ABA Problem
+
+#### 1. Stamped Reference — `AtomicStampedReference`
+
+Pairs the value with an integer **stamp** (version counter). Both the value and the stamp must match for CAS to succeed. Each write increments the stamp, making A→B→A distinguishable from an unchanged A.
+
+```java
+AtomicStampedReference<Integer> ref =
+        new AtomicStampedReference<>(100, 0);
+
+// Read value and stamp together
+int[] stampHolder = new int[1];
+Integer value = ref.get(stampHolder);
+int currentStamp = stampHolder[0];
+
+// CAS requires both value AND stamp to match
+boolean success = ref.compareAndSet(
+        value,           // expected value
+        200,             // new value
+        currentStamp,    // expected stamp
+        currentStamp + 1 // new stamp
+);
+```
+
+After A→B→A the stamp will be 2 (not 0), so a stale CAS expecting stamp 0 will fail correctly.
+
+#### 2. Marked Reference — `AtomicMarkableReference`
+
+Similar to `AtomicStampedReference` but uses a single **boolean mark** instead of an integer stamp. Useful when you only need to flag a value as logically deleted or invalid (e.g., in lock-free linked list deletion), rather than tracking a full version count.
+
+```java
+AtomicMarkableReference<String> ref =
+        new AtomicMarkableReference<>("hello", false);
+
+// Mark the node as logically deleted
+ref.compareAndSet("hello", "hello", false, true);
+
+// Check mark before acting
+boolean[] markHolder = new boolean[1];
+String val = ref.get(markHolder);
+if (!markHolder[0]) {
+    // safe to use val
+}
+```
+
+#### 4. Garbage Collection (Java's built-in protection)
+
+In Java, the ABA problem with **object identity** is largely mitigated by the garbage collector.
+An object cannot be freed, and its memory reused while any thread holds a reference to it,
+so the exact pointer-reuse scenario from C/C++ lock-free code is much rarer.
+However, ABA can still occur with **logical state** (e.g., a node removed and re-inserted into a data structure),
+so `AtomicStampedReference` is still needed in those cases.
+
+---
+
+### Summary
+
+| Topic                     | Key Point                                                                                      |
+|---------------------------|------------------------------------------------------------------------------------------------|
+| CAS                       | Atomic hardware instruction: update a value only if it matches an expected value.              |
+| Optimistic concurrency    | No locks — threads retry on conflict instead of blocking.                                      |
+| Low contention            | CAS is very efficient; prefer it for simple shared counters and flags.                         |
+| High contention           | Spinning wastes CPU; consider `LongAdder` or lock-based approaches.                            |
+| ABA problem               | A value can change A→B→A between a read and a CAS, causing a stale update to succeed silently. |
+| `AtomicStampedReference`  | Pairs the value with a version stamp — the canonical Java solution to ABA.                     |
+| `AtomicMarkableReference` | Uses a boolean mark instead of a stamp — suited for logical deletion patterns.                 |
+| Java GC                   | Reduces (but does not eliminate) ABA risk by preventing premature memory reuse.                |
+
+---
+
 ## Busy Spin
 
 A technique where a thread waits without calling `wait()`, `sleep()`, or `yield()` — instead it loops continuously:

@@ -1274,6 +1274,41 @@ Core Comparison:
 | Dependency      | javax.annotation-api            | Pure Spring framework   |
 | Best For        | Internal bean setup logic       | Third-party classes     |
 
+Here's a comparison table you can paste directly into your Spring Core notes:
 
+---
+
+## BeanFactory vs ApplicationContext
+
+Both `BeanFactory` and `ApplicationContext` are Spring IoC container interfaces, with `ApplicationContext` being a superset of `BeanFactory`. In most applications, `ApplicationContext` is the preferred choice.
+
+| Feature                                             | `BeanFactory`                   | `ApplicationContext`                                                   |
+|-----------------------------------------------------|---------------------------------|------------------------------------------------------------------------|
+| Bean instantiation                                  | Lazy (on first request)         | Eager (at startup, by default)                                         |
+| Annotation support (`@Autowired`, `@PostConstruct`) | Not supported                   | Supported                                                              |
+| `MessageSource` (i18n)                              | Not supported                   | Supported                                                              |
+| Event publishing (`ApplicationEvent`)               | Not supported                   | Supported                                                              |
+| `BeanPostProcessor` auto-registration               | Manual                          | Automatic                                                              |
+| `BeanFactoryPostProcessor` auto-registration        | Manual                          | Automatic                                                              |
+| AOP integration                                     | Limited                         | Full support                                                           |
+| Environment & property resolution                   | Not supported                   | Supported                                                              |
+| Web application support                             | Not supported                   | Via `WebApplicationContext`                                            |
+| Typical implementation                              | `XmlBeanFactory` *(deprecated)* | `ClassPathXmlApplicationContext`, `AnnotationConfigApplicationContext` |
+
+### When to use which
+
+**`BeanFactory`** is suitable only in extremely resource-constrained environments (e.g., embedded systems or lightweight tools) where startup memory must be minimized and you do not need advanced features.
+
+**`ApplicationContext`** should be the default choice for virtually all applications — standalone, web, or enterprise. It provides the full Spring feature set out of the box.
+
+### Common ApplicationContext implementations
+
+| Implementation                          | Description                                                     |
+|-----------------------------------------|-----------------------------------------------------------------|
+| `ClassPathXmlApplicationContext`        | Loads context from an XML file on the classpath                 |
+| `FileSystemXmlApplicationContext`       | Loads context from an XML file on the filesystem                |
+| `AnnotationConfigApplicationContext`    | Loads context from `@Configuration` classes (Java-based config) |
+| `AnnotationConfigWebApplicationContext` | Like the above, for web applications                            |
+| `XmlWebApplicationContext`              | Loads context from an XML file in a web application             |
 
 
