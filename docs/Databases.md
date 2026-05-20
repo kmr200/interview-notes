@@ -245,6 +245,314 @@ Transaction 1 gets different results for the same query because Transaction 2 in
 
 ---
 
+Here's the content you can paste into your `databases.md`:
+
+---
+
+## Database Migration Tools
+
+Database migration tools manage the evolution of a database schema over time in a controlled, versioned, and repeatable way. Instead of applying SQL changes manually, migrations are defined as versioned scripts or Java classes that the tool tracks, applies, and records automatically.
+
+### Why Use a Migration Tool?
+
+Without a migration tool, schema changes are applied manually and inconsistently across environments (dev, staging, production), with no record of what was applied or in what order. Migration tools solve this by treating the database schema as code — versioned, reviewable, and reproducible.
+
+Key benefits:
+
+| Benefit               | Description                                                                                                     |
+|-----------------------|-----------------------------------------------------------------------------------------------------------------|
+| **Version control**   | Every schema change is a versioned artifact that can be committed to source control alongside application code. |
+| **Reproducibility**   | Any environment can be brought to any schema state by running the migration history from scratch.               |
+| **Auditability**      | A history table records exactly which migrations were applied, when, and by whom.                               |
+| **Team coordination** | Developers can write migrations independently; the tool detects conflicts and enforces ordering.                |
+| **Rollback support**  | Some tools support undo/rollback scripts for reverting a migration.                                             |
+| **CI/CD integration** | Migrations can run automatically on application startup or as a pipeline step before deployment.                |
+
+---
+
+### Flyway
+
+Flyway is a lightweight, convention-over-configuration migration tool. It applies versioned SQL (or Java) migration scripts in order and tracks them in a metadata table (`flyway_schema_history`).
+
+#### How Flyway Works
+
+On startup (or on demand), Flyway:
+
+1. Connects to the database.
+2. Reads the `flyway_schema_history` table to find which migrations have already been applied.
+3. Scans the configured locations for migration scripts.
+4. Applies any pending migrations in version order.
+5. Records each applied migration in the history table.
+
+If a migration that was previously applied has been modified, Flyway detects the checksum mismatch and fails fast, preventing silent schema drift.
+
+#### Naming Convention
+
+Flyway identifies and orders migration scripts entirely by their filename:
+
+```
+V{version}__{description}.sql
+```
+
+| Part            | Example                     | Description                                                       |
+|-----------------|-----------------------------|-------------------------------------------------------------------|
+| `V`             | `V`                         | Prefix for versioned migrations.                                  |
+| `{version}`     | `1`, `2`, `1.1`, `20240101` | Version number. Dot or underscore separated.                      |
+| `__`            | `__`                        | Double underscore separator (required).                           |
+| `{description}` | `create_users_table`        | Human-readable description. Underscores become spaces in reports. |
+| `.sql`          | `.sql`                      | File extension. `.java` for Java-based migrations.                |
+
+Examples:
+
+```
+V1__create_users_table.sql
+V2__add_email_column.sql
+V3__create_orders_table.sql
+V3.1__add_orders_index.sql
+```
+
+There are also **repeatable migrations** (prefix `R__`) which are re-applied whenever their checksum changes, useful for views, stored procedures, and functions:
+
+```
+R__create_reporting_views.sql
+```
+
+#### Setup (Spring Boot)
+
+Add the dependency:
+
+```xml
+<dependency>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-core</artifactId>
+</dependency>
+```
+
+Spring Boot auto-configures Flyway when the dependency is on the classpath. Place migration scripts in:
+
+```
+src/main/resources/db/migration/
+```
+
+Key `application.properties` settings:
+
+```properties
+spring.flyway.enabled=true
+spring.flyway.locations=classpath:db/migration
+spring.flyway.baseline-on-migrate=true
+spring.flyway.validate-on-migrate=true
+spring.flyway.out-of-order=false
+```
+
+#### Example Migration Scripts
+
+```sql
+-- V1__create_users_table.sql
+CREATE TABLE users (
+    id      BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name    VARCHAR(100) NOT NULL,
+    email   VARCHAR(255) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+```sql
+-- V2__add_phone_column.sql
+ALTER TABLE users
+    ADD COLUMN phone VARCHAR(20);
+```
+
+#### Java-Based Migrations
+
+For logic that cannot be expressed in plain SQL (e.g., data transformations):
+
+```java
+// db/migration/V3__migrate_legacy_data.java
+@Component
+public class V3__migrate_legacy_data extends BaseJavaMigration {
+
+    @Override
+    public void migrate(Context context) throws Exception {
+        try (PreparedStatement stmt = context.getConnection().prepareStatement(
+                "UPDATE users SET phone = 'N/A' WHERE phone IS NULL")) {
+            stmt.execute();
+        }
+    }
+}
+```
+
+---
+
+### Liquibase
+
+Liquibase is a more feature-rich migration tool that stores schema changes in **changelogs** — files in XML, YAML, JSON, or SQL format. Each change is described as a **changeset**, identified by an `id` and `author`. Liquibase tracks applied changes in the `DATABASECHANGELOG` table.
+
+#### How Liquibase Works
+
+On startup (or on demand), Liquibase:
+
+1. Reads the master changelog file.
+2. Compares its changesets against the `DATABASECHANGELOG` table.
+3. Applies any pending changesets in order.
+4. Records each applied changeset with its `id`, `author`, checksum, and timestamp.
+
+#### Changelog Formats
+
+**XML:**
+
+```xml
+<!-- db/changelog/db.changelog-master.xml -->
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <include file="db/changelog/changes/001-create-users-table.xml"/>
+    <include file="db/changelog/changes/002-add-phone-column.xml"/>
+
+</databaseChangeLog>
+```
+
+```xml
+<!-- db/changelog/changes/001-create-users-table.xml -->
+<databaseChangeLog ...>
+    <changeSet id="001" author="dev">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
+```
+
+**YAML:**
+
+```yaml
+# db/changelog/changes/002-add-phone-column.yaml
+databaseChangeLog:
+  - changeSet:
+      id: 002
+      author: dev
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: phone
+                  type: VARCHAR(20)
+```
+
+**SQL (plain):**
+
+```sql
+-- db/changelog/changes/003-create-orders-table.sql
+--liquibase formatted sql
+
+--changeset dev:003
+CREATE TABLE orders (
+    id      BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    total   DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
+#### Setup (Spring Boot)
+
+Add the dependency:
+
+```xml
+<dependency>
+    <groupId>org.liquibase</groupId>
+    <artifactId>liquibase-core</artifactId>
+</dependency>
+```
+
+Key `application.properties` settings:
+
+```properties
+spring.liquibase.enabled=true
+spring.liquibase.change-log=classpath:db/changelog/db.changelog-master.xml
+spring.liquibase.drop-first=false
+```
+
+#### Rollback Support
+
+Liquibase supports rollback either automatically (for built-in change types like `createTable`) or via explicit rollback blocks:
+
+```xml
+<changeSet id="003" author="dev">
+    <addColumn tableName="users">
+        <column name="status" type="VARCHAR(20)" defaultValue="ACTIVE"/>
+    </addColumn>
+    <rollback>
+        <dropColumn tableName="users" columnName="status"/>
+    </rollback>
+</changeSet>
+```
+
+Rolling back from the CLI:
+
+```bash
+liquibase rollbackCount 1        # roll back the last changeset
+liquibase rollbackToDate 2024-01-01  # roll back to a specific date
+liquibase rollbackTag v1.0       # roll back to a tagged state
+```
+
+---
+
+### Flyway vs Liquibase
+
+| Feature                      | Flyway                                          | Liquibase                                                                            |
+|------------------------------|-------------------------------------------------|--------------------------------------------------------------------------------------|
+| **Configuration format**     | SQL or Java files                               | XML, YAML, JSON, or SQL                                                              |
+| **Ordering mechanism**       | Filename version number (`V1__`, `V2__`)        | `id` + `author` per changeset                                                        |
+| **Rollback support**         | Community edition has no undo; Pro edition does | Built-in rollback blocks                                                             |
+| **Repeatable migrations**    | `R__` prefix                                    | `runOnChange: true`                                                                  |
+| **Database-agnostic syntax** | Plain SQL — you write for your target DB        | Abstract change types auto-generate DB-specific SQL                                  |
+| **Checksum validation**      | Fails on modified applied migrations            | Fails on modified applied changesets                                                 |
+| **Complexity**               | Low — minimal configuration, easy to learn      | Higher — more powerful but more verbose setup                                        |
+| **Spring Boot auto-config**  | +                                               | +                                                                                    |
+| **CI/CD / CLI tooling**      | +                                               | +                                                                                    |
+| **Best for**                 | Teams that prefer plain SQL and simplicity      | Teams needing rollback support, multi-DB compatibility, or complex change management |
+
+### When to Choose Each
+
+**Choose Flyway if:**
+- Your team is comfortable writing plain SQL.
+- You want minimal setup and configuration.
+- Rollback is handled at the deployment pipeline level (e.g., blue-green deployments) rather than by the migration tool.
+- You value simplicity and convention over flexibility.
+
+**Choose Liquibase if:**
+- You need built-in rollback support.
+- Your application targets multiple database engines and you want database-agnostic change definitions.
+- You prefer structured, non-SQL changelog formats (XML/YAML) for readability and tooling support.
+- You need fine-grained control over changeset conditions, labels, and contexts.
+
+---
+
+### Best Practices
+
+- **Never modify an applied migration.** Both tools detect checksum changes and will refuse to start. Create a new migration to correct a mistake instead.
+- **Keep migrations small and focused.** One logical change per migration script or changeset makes history readable and rollback straightforward.
+- **Store migrations in version control.** Migration files are part of the codebase and should live alongside the application code they support.
+- **Test migrations against a production-like database.** Schema changes that work on H2 (in-memory) may fail on PostgreSQL or MySQL. Run migrations against a real database in CI.
+- **Use a separate migration user.** The database user that runs migrations (DDL — `CREATE`, `ALTER`, `DROP`) should be different from the application runtime user (DML — `SELECT`, `INSERT`, `UPDATE`, `DELETE`), following the principle of least privilege.
+- **Tag releases in Liquibase.** Use `liquibase tag v1.0` before a release so you have a reliable rollback target.
+- **Coordinate migrations in teams.** When multiple developers write migrations simultaneously, version conflicts are possible. Agree on a numbering convention (e.g., timestamps like `V20240515143000__...`) to minimize collisions.
+
+---
+
 ## CAP Theorem
 
 The CAP theorem states that a distributed data system can guarantee at most **two** of the following three properties simultaneously:
