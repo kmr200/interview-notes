@@ -1,5 +1,58 @@
 # Spring Core
 
+---
+
+## Core Components of Spring Core
+
+Spring Core is the foundation of the entire Spring Framework.
+Everything else — Spring MVC, Spring Data, Spring Security — is built on top of it.
+It provides four fundamental building blocks:
+
+### IoC Container
+
+The Inversion of Control (IoC) container is the heart of Spring Core.
+Instead of objects creating and managing their own dependencies, that responsibility is inverted —
+the container creates objects, wires them together, and manages their full lifecycle.
+
+The container is represented by two main interfaces:
+
+- `BeanFactory` — the basic container, providing core IoC functionality.
+- `ApplicationContext` — extends `BeanFactory` with enterprise features (events, i18n, AOP, etc.). This is what you use in practice.
+
+When the application starts, the container reads configuration metadata (annotations, Java config classes, or XML),
+builds `BeanDefinition` objects for every declared bean, and assembles the application.
+
+### Dependency Injection (DI)
+
+Dependency Injection is the mechanism the IoC container uses to supply an object with the dependencies it needs.
+Rather than a class instantiating its collaborators with `new`,
+the container injects them — via a constructor, a setter method, or a field.
+This makes classes easier to test, easier to swap,
+and decoupled from the specifics of how their dependencies are created.
+
+### Bean Lifecycle Management
+
+The container does not just create beans — it manages their entire lifecycle.
+This includes instantiation, dependency injection,
+calling initialization callbacks (`@PostConstruct`, `InitializingBean`),
+making the bean available for use, and finally calling destruction callbacks (`@PreDestroy`) when the context is closed.
+Scopes (`singleton`, `prototype`, etc.) also fall under this responsibility.
+
+### Configuration Metadata
+
+The container needs instructions for what to create and how to wire things together.
+This is provided as configuration metadata in one of three forms:
+
+| Format           | How                                                                                                 |
+|------------------|-----------------------------------------------------------------------------------------------------|
+| Java-based       | `@Configuration` classes with `@Bean` methods — the modern, recommended approach.                   |
+| Annotation-based | `@Component`, `@Service`, `@Repository`, `@Controller` on classes, discovered via `@ComponentScan`. |
+| XML-based        | `applicationContext.xml` — the legacy approach, still valid but rarely used in new projects.        |
+
+All three can be mixed within the same application.
+
+---
+
 ## Creating  and managing Beans:
 To create a Bean, you simply create a POJO class, for example:
 
@@ -193,10 +246,10 @@ constructor injection with programmatic validation of arguments is preferable.
 
 ### Circular dependencies
 
-If you use predominantly constructor injection, it is possible to create an unresolvable circular dependency scenario.
+If you predominantly use constructor injection, it is possible to create an unresolvable circular dependency scenario.
 For example, Class A requires an instance of class B through constructor injection, and class B requires an instance of
 class A thorough constructor injection. If you configure beans for classes A and B to be injected into each other,
-the Spring IoC container detects this circular reference at runtime, and throws a BeanCurrentlyInCreationException.
+the Spring IoC container detects this circular reference at runtime and throws a BeanCurrentlyInCreationException.
 
 ### Lazy Beans
 

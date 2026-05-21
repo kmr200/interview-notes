@@ -135,6 +135,135 @@ that local variables are normally only accessible to the thread executing that m
 
 > Note: Lambda expressions **cannot** call default methods of the functional interface they implement.
 
+---
+
+### Exception Handling in Lambdas
+
+Lambda expressions in Java do not change how exceptions work, but they interact with the type system in a way that makes exception handling more restrictive and sometimes verbose.
+
+#### The Core Problem
+
+A lambda must conform to the functional interface it targets. If that interface's method does not declare a checked exception, the lambda body cannot throw one either — even if the operation inside naturally does.
+
+```java
+// Compiler error — forEach expects Consumer<T>, whose accept() throws no checked exceptions
+List<String> paths = List.of("a.txt", "b.txt");
+paths.forEach(path -> Files.readAllBytes(Path.of(path))); // IOException is checked — does not compile
+```
+
+---
+
+#### Why Standard Functional Interfaces Don't Allow Checked Exceptions
+
+The built-in functional interfaces in `java.util.function` — `Function<T,R>`, `Consumer<T>`, `Supplier<T>`, `Predicate<T>`, and so on — are deliberately designed with no checked exceptions in their method contracts:
+
+```java
+@FunctionalInterface
+public interface Function<T, R> {
+    R apply(T t); // no throws clause
+}
+
+@FunctionalInterface
+public interface Consumer<T> {
+    void accept(T t); // no throws clause
+}
+```
+
+This is an intentional design decision. Checked exceptions would make these interfaces much harder to compose — every `map()`, `filter()`, or `forEach()` call in a stream pipeline would require its caller to declare or handle the exception, making the Stream API nearly unusable in practice.
+
+The consequence is that **any lambda passed to a standard functional interface must either handle checked exceptions internally or wrap them as unchecked** — there is no way around this without defining your own functional interface.
+
+---
+
+#### Approaches
+
+**1. Try-catch inside the lambda (straightforward but verbose):**
+
+```java
+paths.forEach(path -> {
+    try {
+        Files.readAllBytes(Path.of(path));
+    } catch (IOException e) {
+        throw new RuntimeException(e); // wrap as unchecked
+    }
+});
+```
+
+**2. Extract to a helper method:**
+
+Keeps the lambda clean by moving the try-catch into a named method:
+
+```java
+paths.forEach(path -> readSafely(path));
+
+private byte[] readSafely(String path) {
+    try {
+        return Files.readAllBytes(Path.of(path));
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+}
+```
+
+**3. Define a checked functional interface:**
+
+Create a functional interface that declares the checked exception, then write a wrapper that adapts it to the standard interface:
+
+```java
+@FunctionalInterface
+public interface CheckedFunction<T, R> {
+    R apply(T t) throws Exception;
+}
+
+public static <T, R> Function<T, R> wrap(CheckedFunction<T, R> fn) {
+    return t -> {
+        try {
+            return fn.apply(t);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    };
+}
+
+// Usage — clean at the call site
+paths.stream()
+     .map(wrap(path -> Files.readAllBytes(Path.of(path))))
+     .forEach(bytes -> System.out.println(bytes.length));
+```
+
+This is the most reusable approach and keeps stream pipelines readable.
+
+#### Unchecked Exceptions
+
+Unchecked exceptions (`RuntimeException` and its subclasses) can be thrown freely from any lambda with no extra ceremony:
+
+```java
+List.of(-1, 0, 2).forEach(n -> {
+    if (n <= 0) throw new IllegalArgumentException("Must be positive: " + n);
+    System.out.println(Math.sqrt(n));
+});
+```
+
+#### In `Stream` Pipelines
+
+Exception handling in multi-step pipelines deserves extra care. A wrapping approach or a dedicated safe-mapping method ensures that one failing element does not silently discard the rest — or that failures are handled per element rather than aborting the whole stream:
+
+```java
+paths.stream()
+     .map(wrap(path -> Files.readAllBytes(Path.of(path))))  // wrap checked exception
+     .filter(bytes -> bytes.length > 0)
+     .forEach(bytes -> process(bytes));
+```
+
+#### Summary
+
+| Approach                                      | Best for                                                                       |
+|-----------------------------------------------|--------------------------------------------------------------------------------|
+| Try-catch inside lambda                       | Quick, one-off cases where reuse is not needed.                                |
+| Extract to helper method                      | Improving readability without introducing new abstractions.                    |
+| Custom checked functional interface + wrapper | Reusable, clean pipelines where many lambdas throw the same checked exception. |
+| Unchecked exceptions                          | Any case — no restrictions apply.                                              |
+
 ### How to sort a list of strings with a lambda expression?
 
 ```java
@@ -418,6 +547,10 @@ class Licence {
 
 ---
 
+Here's the cleaned version:
+
+---
+
 ## Optional
 
 ### What is `Optional`?
@@ -433,7 +566,47 @@ optional.get();                                     // "hello"
 optional.orElse("ops...");                          // "hello"
 ```
 
----
+### Creating an Optional
+
+There are three factory methods for creating an `Optional`:
+
+| Method                       | Accepts null? | Throws on null?                 | Use when                                                 |
+|------------------------------|---------------|---------------------------------|----------------------------------------------------------|
+| `Optional.of(value)`         | No            | Yes — `NullPointerException`    | You are certain the value is non-null.                   |
+| `Optional.ofNullable(value)` | Yes           | No — returns `Optional.empty()` | The value may or may not be null.                        |
+| `Optional.empty()`           | —             | —                               | You want to explicitly represent the absence of a value. |
+
+**`Optional.ofNullable()`** is the safe, general-purpose choice. It wraps the value if present, or returns an empty `Optional` if the value is `null`:
+
+```java
+String value = null;
+Optional<String> opt = Optional.ofNullable(value); // Optional.empty() — no exception
+```
+
+**`Optional.of()`** will throw a `NullPointerException` immediately if the value is `null`:
+
+```java
+String value = null;
+Optional<String> opt = Optional.of(value); // throws NullPointerException
+```
+
+#### Why does `Optional.of()` exist at all?
+
+At first glance `Optional.of()` seems counterproductive — if the goal of `Optional` is to avoid `NullPointerException`, why use a method that can throw one?
+
+The reason is **fail-fast behavior**. If you are in a situation where a `null` value would be a bug — a violated contract, a broken assumption, a programming error — you want to know about it immediately and loudly, right at the source, rather than propagating an empty `Optional` silently through the call chain and producing a confusing result somewhere downstream.
+
+```java
+// Bad — null silently becomes Optional.empty(), bug is hidden
+Optional<User> user = Optional.ofNullable(userRepository.getById(id));
+user.ifPresent(this::process); // just does nothing if null, no indication of a bug
+
+// Better — if getById() should never return null, enforce it immediately
+Optional<User> user = Optional.of(userRepository.getById(id)); // NullPointerException here if contract is violated
+user.ifPresent(this::process);
+```
+
+In short: use `Optional.of()` to assert that a value must not be null, and let it blow up early if that assertion is violated. Use `Optional.ofNullable()` when null is a legitimate, expected possibility.
 
 ## Stream API
 

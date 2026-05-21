@@ -276,6 +276,12 @@ Garbage collection frees heap memory by removing objects with no live references
 - Using `""` syntax: JVM checks the pool first, reuses if found, else adds.
 - Using `new String(...)`: always creates a new heap object. Use `intern()` to add it to the pool.
 
+> The String pool lives in the heap (moved from PermGen in Java 7) and is therefore subject to garbage collection.
+> However, string literals are referenced by the class's constant pool
+> and are never collected as long as their class loader is alive.
+> Only strings added to the pool programmatically via intern()
+> can be garbage collected once no other references to them remain.
+
 ---
 
 ## `finalize()`

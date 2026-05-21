@@ -1,6 +1,6 @@
 # Interview Notes
 
-A collection of Java and Spring interview preparation notes, ordered from foundational to most complex — each document assumes knowledge from those above it.
+A collection of Java and Spring interview preparation notes, ordered from foundational to the most complex — each document assumes knowledge from those above it.
 
 | #  | Document                                                           | Description                                                        | Requires                                     |
 |----|--------------------------------------------------------------------|--------------------------------------------------------------------|----------------------------------------------|
