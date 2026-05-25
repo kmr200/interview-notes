@@ -561,7 +561,7 @@ for (Map.Entry<K, V> entry : map.entrySet()) {
 ### What are the differences between `TreeSet` and `HashSet`?
 
 - **`TreeSet`** - backed by a red-black tree; elements are always sorted. Basic operations are O(log N).
-- **`HashSet`** - backed by a `HashMap` (an element serves as both key and value); no ordering guarantee. Basic operations are O(1) on average.
+- **`HashSet`** - backed by a `HashMap` (an element serves as key and a dummy object as value); no ordering guarantee. Basic operations are O(1) on average.
 
 ---
 
