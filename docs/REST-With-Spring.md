@@ -41,7 +41,7 @@ public class BookController {
 
 ### `@RestController`
 
-`@RestController` combines `@Controller` and `@ResponseBody`. By annotating the controller class with `@RestController`, you no longer need to add `@ResponseBody` to every request mapping method — it is active by default. The following two declarations are equivalent:
+`@RestController` combines `@Controller` and `@ResponseBody`. By annotating the controller class with `@RestController`, you no longer need to add `@ResponseBody` to every request mapping method - it is active by default. The following two declarations are equivalent:
 
 ```java
 @Controller
@@ -80,14 +80,14 @@ public class BookController {
 
 Marks request handler methods inside `@Controller` / `@RestController` classes. It can be configured using:
 
-- `path` (or its aliases `name` and `value`) — the URL the method is mapped to.
-- `method` — compatible HTTP methods.
-- `params` — filters requests based on the presence, absence, or value of HTTP parameters.
-- `headers` — filters requests based on the presence, absence, or value of HTTP headers.
-- `consumes` — the media types the method can consume in the HTTP request body.
-- `produces` — the media types the method can produce in the HTTP response body.
+- `path` (or its aliases `name` and `value`) - the URL the method is mapped to.
+- `method` - compatible HTTP methods.
+- `params` - filters requests based on the presence, absence, or value of HTTP parameters.
+- `headers` - filters requests based on the presence, absence, or value of HTTP headers.
+- `consumes` - the media types the method can consume in the HTTP request body.
+- `produces` - the media types the method can produce in the HTTP response body.
 
-Example — Spring MVC controller returning a view name:
+Example - Spring MVC controller returning a view name:
 
 ```java
 @Controller
@@ -104,7 +104,7 @@ public class BookController {
 }
 ```
 
-Example — Spring REST controller returning a `ResponseEntity`:
+Example - Spring REST controller returning a `ResponseEntity`:
 
 ```java
 @RestController
@@ -120,7 +120,7 @@ public class BookController {
 }
 ```
 
-You can provide default settings for all handler methods by applying `@RequestMapping` at the class level. The URL is not overridden by method-level settings — instead, the two path parts are appended. For example:
+You can provide default settings for all handler methods by applying `@RequestMapping` at the class level. The URL is not overridden by method-level settings - instead, the two path parts are appended. For example:
 
 ```java
 @RestController
@@ -513,10 +513,10 @@ Spring MVC is a Java framework for building web applications following the Model
 
 ![spring-web-model-view-controller.png](../images/rest-with-spring/spring-web-model-view-controller.png)
 
-- **Model** — Contains the data of the application (a single object or a collection).
-- **Controller** — Contains the business logic. Marked with `@Controller`.
-- **View** — Renders data in a specific format. Common technologies: JSP+JSTL, Thymeleaf, Apache Velocity, FreeMarker.
-- **Front Controller** — `DispatcherServlet` acts as the front controller, managing the flow of the entire Spring MVC application.
+- **Model** - Contains the data of the application (a single object or a collection).
+- **Controller** - Contains the business logic. Marked with `@Controller`.
+- **View** - Renders data in a specific format. Common technologies: JSP+JSTL, Thymeleaf, Apache Velocity, FreeMarker.
+- **Front Controller** - `DispatcherServlet` acts as the front controller, managing the flow of the entire Spring MVC application.
 
 ### Request Lifecycle
 
@@ -536,9 +536,9 @@ Spring MVC is a Java framework for building web applications following the Model
 ### References
 
 - [Spring MVC Example Project](https://github.com/eugenp/tutorials/tree/master/spring-web-modules/spring-mvc-basics/src/main/webapp/WEB-INF/view)
-- [Spring MVC Tutorial — Baeldung](https://www.baeldung.com/spring-mvc-tutorial)
-- [Spring MVC and Java-Based Configuration — DZone](https://dzone.com/articles/spring-mvc-and-java-based-configuration-1)
-- [Spring MVC using Java-Based Configuration — GeeksforGeeks](https://www.geeksforgeeks.org/spring-mvc-using-java-based-configuration/)
+- [Spring MVC Tutorial - Baeldung](https://www.baeldung.com/spring-mvc-tutorial)
+- [Spring MVC and Java-Based Configuration - DZone](https://dzone.com/articles/spring-mvc-and-java-based-configuration-1)
+- [Spring MVC using Java-Based Configuration - GeeksforGeeks](https://www.geeksforgeeks.org/spring-mvc-using-java-based-configuration/)
 
 ---
 
@@ -546,8 +546,8 @@ Spring MVC is a Java framework for building web applications following the Model
 
 Spring supports two ways of creating RESTful services:
 
-- Using MVC with `ModelAndView` — older, well-documented, but verbose and configuration-heavy.
-- Using HTTP message converters and annotations — lightweight, easy to implement, minimal configuration, sensible defaults.
+- Using MVC with `ModelAndView` - older, well-documented, but verbose and configuration-heavy.
+- Using HTTP message converters and annotations - lightweight, easy to implement, minimal configuration, sensible defaults.
 
 ### REST Controllers
 
@@ -631,9 +631,9 @@ public class WebConfig {
 }
 ```
 
-- `@Configuration` — marks the class as a source of Spring bean definitions.
-- `@EnableWebMvc` — enables Spring MVC support; in a REST context, auto-registers JSON (Jackson) and XML (JAXB 2) converters if they are on the classpath. Equivalent to `<mvc:annotation-driven />` in XML.
-- `@ComponentScan` — scans the given package for controllers and beans.
+- `@Configuration` - marks the class as a source of Spring bean definitions.
+- `@EnableWebMvc` - enables Spring MVC support; in a REST context, auto-registers JSON (Jackson) and XML (JAXB 2) converters if they are on the classpath. Equivalent to `<mvc:annotation-driven />` in XML.
+- `@ComponentScan` - scans the given package for controllers and beans.
 
 To customize the configuration, implement `WebMvcConfigurer`:
 
@@ -728,14 +728,14 @@ Each `DispatcherServlet` has its own `WebApplicationContext`, which inherits bea
 
 There are four main approaches to versioning a REST API:
 
-**1. URI Versioning** — include the version in the URL path:
+**1. URI Versioning** - include the version in the URL path:
 
 ```
 http://host/v1/users
 http://host/v2/users
 ```
 
-**2. Accept Header Versioning** — use a custom MIME type in the `Accept` header:
+**2. Accept Header Versioning** - use a custom MIME type in the `Accept` header:
 
 ```
 Accept: application/vnd.javadevjournal.v2+json
@@ -760,14 +760,14 @@ Content-Type: application/vnd.javadevjournal.v1+json
 }
 ```
 
-**3. Custom Header Versioning** — pass the version in a custom request header:
+**3. Custom Header Versioning** - pass the version in a custom request header:
 
 ```
 Accept-version: v1
 Accept-version: v2
 ```
 
-**4. URI Parameter Versioning** — append the version as a query parameter:
+**4. URI Parameter Versioning** - append the version as a query parameter:
 
 ```
 http://host/shopping?version=2.0
@@ -795,9 +795,9 @@ http://domainname/products/date/page/1
 
 #### Key Pagination Concepts
 
-- **Page & Size/Limit** — control the number of results per page and which page to retrieve. APIs should provide a default limit but allow clients to override it.
-- **Sorting** — use the `sort_by=[attribute]::[asc/desc]` pattern. Example: `?sort_by=name::asc`.
-- **Discoverability** — include `first`, `prev`, `next`, and `last` links in the response (HATEOAS-style).
+- **Page & Size/Limit** - control the number of results per page and which page to retrieve. APIs should provide a default limit but allow clients to override it.
+- **Sorting** - use the `sort_by=[attribute]::[asc/desc]` pattern. Example: `?sort_by=name::asc`.
+- **Discoverability** - include `first`, `prev`, `next`, and `last` links in the response (HATEOAS-style).
 
 #### Pagination Controller Example
 
@@ -890,8 +890,8 @@ HATEOAS (Hypermedia as the Engine of Application State) is a REST constraint tha
 Spring provides the HATEOAS library to easily create REST representations that follow this principle.
 
 References:
-- [Spring HATEOAS Tutorial — Baeldung](https://www.baeldung.com/spring-hateoas-tutorial)
-- [Spring HATEOAS — JavaDevJournal](https://www.javadevjournal.com/spring/spring-hateoas/)
+- [Spring HATEOAS Tutorial - Baeldung](https://www.baeldung.com/spring-hateoas-tutorial)
+- [Spring HATEOAS - JavaDevJournal](https://www.javadevjournal.com/spring/spring-hateoas/)
 
 ---
 
@@ -924,9 +924,9 @@ public class BookController {
 
 Defines a global exception resolver for the entire application. Spring provides several built-in implementations:
 
-- **`ExceptionHandlerExceptionResolver`** — enabled by default; handles `@ExceptionHandler` methods.
-- **`DefaultHandlerExceptionResolver`** — enabled by default; maps standard Spring exceptions to HTTP status codes (4xx/5xx). Does not set a response body.
-- **`ResponseStatusExceptionResolver`** — enabled by default; maps `@ResponseStatus`-annotated exceptions to HTTP status codes.
+- **`ExceptionHandlerExceptionResolver`** - enabled by default; handles `@ExceptionHandler` methods.
+- **`DefaultHandlerExceptionResolver`** - enabled by default; maps standard Spring exceptions to HTTP status codes (4xx/5xx). Does not set a response body.
+- **`ResponseStatusExceptionResolver`** - enabled by default; maps `@ResponseStatus`-annotated exceptions to HTTP status codes.
 
 Example of a custom `@ResponseStatus` exception:
 
@@ -1008,7 +1008,7 @@ public Book findById(@PathVariable("id") Long id, HttpServletResponse response) 
 
 **Tradeoffs:**
 
-- No unified handling convention — harder to enforce application-wide policies compared to `@ControllerAdvice`.
+- No unified handling convention - harder to enforce application-wide policies compared to `@ControllerAdvice`.
 - Can lead to code duplication across controllers.
 
 > You can combine approaches within one application (e.g., `@ControllerAdvice` globally + `ResponseStatusException` locally). Be careful when the same exception can be handled multiple ways, as behavior may be surprising.

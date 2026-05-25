@@ -5,19 +5,19 @@
 ## Core Components of Spring Core
 
 Spring Core is the foundation of the entire Spring Framework.
-Everything else — Spring MVC, Spring Data, Spring Security — is built on top of it.
+Everything else - Spring MVC, Spring Data, Spring Security - is built on top of it.
 It provides four fundamental building blocks:
 
 ### IoC Container
 
 The Inversion of Control (IoC) container is the heart of Spring Core.
-Instead of objects creating and managing their own dependencies, that responsibility is inverted —
+Instead of objects creating and managing their own dependencies, that responsibility is inverted -
 the container creates objects, wires them together, and manages their full lifecycle.
 
 The container is represented by two main interfaces:
 
-- `BeanFactory` — the basic container, providing core IoC functionality.
-- `ApplicationContext` — extends `BeanFactory` with enterprise features (events, i18n, AOP, etc.). This is what you use in practice.
+- `BeanFactory` - the basic container, providing core IoC functionality.
+- `ApplicationContext` - extends `BeanFactory` with enterprise features (events, i18n, AOP, etc.). This is what you use in practice.
 
 When the application starts, the container reads configuration metadata (annotations, Java config classes, or XML),
 builds `BeanDefinition` objects for every declared bean, and assembles the application.
@@ -26,13 +26,13 @@ builds `BeanDefinition` objects for every declared bean, and assembles the appli
 
 Dependency Injection is the mechanism the IoC container uses to supply an object with the dependencies it needs.
 Rather than a class instantiating its collaborators with `new`,
-the container injects them — via a constructor, a setter method, or a field.
+the container injects them - via a constructor, a setter method, or a field.
 This makes classes easier to test, easier to swap,
 and decoupled from the specifics of how their dependencies are created.
 
 ### Bean Lifecycle Management
 
-The container does not just create beans — it manages their entire lifecycle.
+The container does not just create beans - it manages their entire lifecycle.
 This includes instantiation, dependency injection,
 calling initialization callbacks (`@PostConstruct`, `InitializingBean`),
 making the bean available for use, and finally calling destruction callbacks (`@PreDestroy`) when the context is closed.
@@ -45,9 +45,9 @@ This is provided as configuration metadata in one of three forms:
 
 | Format           | How                                                                                                 |
 |------------------|-----------------------------------------------------------------------------------------------------|
-| Java-based       | `@Configuration` classes with `@Bean` methods — the modern, recommended approach.                   |
+| Java-based       | `@Configuration` classes with `@Bean` methods - the modern, recommended approach.                   |
 | Annotation-based | `@Component`, `@Service`, `@Repository`, `@Controller` on classes, discovered via `@ComponentScan`. |
-| XML-based        | `applicationContext.xml` — the legacy approach, still valid but rarely used in new projects.        |
+| XML-based        | `applicationContext.xml` - the legacy approach, still valid but rarely used in new projects.        |
 
 All three can be mixed within the same application.
 
@@ -490,7 +490,7 @@ public class Main {
         MyBean bean1 = context.getBean(MyBean.class);
         MyBean bean2 = context.getBean(MyBean.class);
 
-        System.out.println(bean1 == bean2); // true — same thread, same instance
+        System.out.println(bean1 == bean2); // true - same thread, same instance
 
         context.close();
     }
@@ -863,7 +863,7 @@ public class ReportService {
 
 ### ObjectProvider\<T>
 
-`ObjectProvider<T>` is a Spring-specific extension of `ObjectFactory<T>` introduced in Spring 4.3. It adds **lazy resolution**, **optional dependency handling**, and **stream-based retrieval** — making it the most flexible Spring-native option.
+`ObjectProvider<T>` is a Spring-specific extension of `ObjectFactory<T>` introduced in Spring 4.3. It adds **lazy resolution**, **optional dependency handling**, and **stream-based retrieval** - making it the most flexible Spring-native option.
 
 ```java
 @Component
@@ -894,17 +894,17 @@ public class ReportService {
     }
 
     public void runIfAvailable(String reportName) {
-        // Does not throw if the bean is missing — safe for optional dependencies
+        // Does not throw if the bean is missing - safe for optional dependencies
         generatorProvider.ifAvailable(gen -> gen.generate(reportName));
     }
 }
 ```
 
-> **`ObjectFactory<T>` vs `ObjectProvider<T>`**: Prefer `ObjectProvider<T>` in modern Spring applications. It is a strict superset — it won't throw a `NoSuchBeanDefinitionException` when the bean is absent (use `ifAvailable` / `getIfAvailable`), and it supports iterating over multiple matching beans via `stream()`.
+> **`ObjectFactory<T>` vs `ObjectProvider<T>`**: Prefer `ObjectProvider<T>` in modern Spring applications. It is a strict superset - it won't throw a `NoSuchBeanDefinitionException` when the bean is absent (use `ifAvailable` / `getIfAvailable`), and it supports iterating over multiple matching beans via `stream()`.
 
 ### Provider\<T> (JSR-330 Standard)
 
-`javax.inject.Provider<T>` (or `jakarta.inject.Provider<T>` in Jakarta EE) is the **standards-based** equivalent from JSR-330. It works identically to `ObjectFactory<T>` but keeps your code decoupled from Spring-specific APIs — useful in portable or framework-agnostic components.
+`javax.inject.Provider<T>` (or `jakarta.inject.Provider<T>` in Jakarta EE) is the **standards-based** equivalent from JSR-330. It works identically to `ObjectFactory<T>` but keeps your code decoupled from Spring-specific APIs - useful in portable or framework-agnostic components.
 
 ```xml
 <!-- Add JSR-330 dependency if not already present -->
@@ -1165,7 +1165,7 @@ public class Main {
 
 Use this if you need to register beans based on properties loaded into the environment.
 
-- **Mechanism:** It provides a `postProcessBeanDefinitionRegistry` hook that runs very early in the application lifecycle—before any standard beans are even instantiated.
+- **Mechanism:** It provides a `postProcessBeanDefinitionRegistry` hook that runs very early in the application lifecycle-before any standard beans are even instantiated.
 - **Best Practice:** Declare this processor as a `static @Bean` to avoid early initialization issues of your configuration class.
 
 ```yaml
@@ -1219,7 +1219,7 @@ public class DataSourceRegistryPostProcessor implements BeanDefinitionRegistryPo
 @Configuration
 public class DataSourceConfig {
 
-    // static — ensures this post-processor runs before the configuration class is instantiated
+    // static - ensures this post-processor runs before the configuration class is instantiated
     @Bean
     public static DataSourceRegistryPostProcessor dataSourceRegistryPostProcessor(Environment env) {
         return new DataSourceRegistryPostProcessor(env);
@@ -1238,7 +1238,7 @@ public class TenantDataSource {
 
     @PostConstruct
     public void init() {
-        System.out.printf("DataSource ready — name: %s, url: %s%n", name, url);
+        System.out.printf("DataSource ready - name: %s, url: %s%n", name, url);
     }
 }
 ```
@@ -1352,7 +1352,7 @@ Both `BeanFactory` and `ApplicationContext` are Spring IoC container interfaces,
 
 **`BeanFactory`** is suitable only in extremely resource-constrained environments (e.g., embedded systems or lightweight tools) where startup memory must be minimized and you do not need advanced features.
 
-**`ApplicationContext`** should be the default choice for virtually all applications — standalone, web, or enterprise. It provides the full Spring feature set out of the box.
+**`ApplicationContext`** should be the default choice for virtually all applications - standalone, web, or enterprise. It provides the full Spring feature set out of the box.
 
 ### Common ApplicationContext implementations
 

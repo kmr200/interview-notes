@@ -14,7 +14,7 @@ In other words, ORM is a programming technique that maps objects to data stored 
 
 **JPA (Java Persistence API)** is a Java specification for accessing, managing, and persisting data between Java objects and relational databases. It is the standard approach for Object-Relational Mapping in Java.
 
-JPA acts as a bridge between object-oriented domain models and relational database systems. Being a specification, JPA doesn't perform any operation by itself — it requires an implementation. ORM tools like Hibernate, TopLink, and iBatis implement the JPA specification for data persistence.
+JPA acts as a bridge between object-oriented domain models and relational database systems. Being a specification, JPA doesn't perform any operation by itself - it requires an implementation. ORM tools like Hibernate, TopLink, and iBatis implement the JPA specification for data persistence.
 
 ---
 
@@ -41,8 +41,8 @@ JPA acts as a bridge between object-oriented domain models and relational databa
 Entities in JPA are POJOs representing data that can be persisted to the database. An entity represents a table; each instance represents a row.
 
 Each entity is associated with metadata describing its mapping. This metadata can be defined as:
-- **Annotations** — metadata tags inside the class (most common).
-- **XML** — metadata defined outside the class in an XML file.
+- **Annotations** - metadata tags inside the class (most common).
+- **XML** - metadata defined outside the class in an XML file.
 
 ---
 
@@ -105,7 +105,7 @@ Key attributes: `name`, `length`, `nullable`, `unique`.
 
 ### `@Transient`
 
-Marks a field as non-persistent — it will not be mapped to any database column.
+Marks a field as non-persistent - it will not be mapped to any database column.
 
 ```java
 @Transient
@@ -349,7 +349,7 @@ session.save(customer);
 ### Update
 
 ```java
-// JPA — changes to managed entities are auto-detected on flush
+// JPA - changes to managed entities are auto-detected on flush
 Customer customer = entityManager.find(Customer.class, 1L);
 customer.setName("Peter");
 entityManager.flush();
@@ -394,7 +394,7 @@ try {
 
 ## JPQL & HQL
 
-**JPQL (Java Persistence Query Language)** is an object-oriented query language defined by JPA — similar to SQL but operates on entities and their fields rather than tables and columns.
+**JPQL (Java Persistence Query Language)** is an object-oriented query language defined by JPA - similar to SQL but operates on entities and their fields rather than tables and columns.
 
 **HQL (Hibernate Query Language)** is Hibernate's superset of JPQL. Every valid JPQL query is valid HQL, but not vice versa.
 
@@ -468,7 +468,7 @@ session.createQuery("delete from Customer where name = :name")
     .executeUpdate();
 ```
 
-### INSERT (HQL only — no JPQL equivalent)
+### INSERT (HQL only - no JPQL equivalent)
 
 ```
 insert_statement ::= INSERT INTO entity_name (attribute_list) select_statement
@@ -525,9 +525,9 @@ Use `Restrictions` methods to add conditions (`gt`, `lt`, `eq`, `like`, etc.) an
 
 **Critical considerations:**
 
-- **Self-invocation** — calling a `@Transactional` method from within the same class bypasses the proxy; the transaction won't apply.
-- **Public methods only** — proxies typically don't intercept `protected` or `private` methods.
-- **Default rollback behavior** — rolls back on `RuntimeException` and `Error`; does **not** roll back on checked exceptions by default.
+- **Self-invocation** - calling a `@Transactional` method from within the same class bypasses the proxy; the transaction won't apply.
+- **Public methods only** - proxies typically don't intercept `protected` or `private` methods.
+- **Default rollback behavior** - rolls back on `RuntimeException` and `Error`; does **not** roll back on checked exceptions by default.
 
 ---
 
@@ -535,7 +535,7 @@ Use `Restrictions` methods to add conditions (`gt`, `lt`, `eq`, `like`, etc.) an
 
 Hibernate has three levels of caching to reduce database queries.
 
-### First-Level Cache (L1 — Session Cache)
+### First-Level Cache (L1 - Session Cache)
 
 - **Scope:** Tied to a single `Session` object; not shared between sessions.
 - **Default:** Always enabled, cannot be disabled.
@@ -543,7 +543,7 @@ Hibernate has three levels of caching to reduce database queries.
 - **Behavior:** First load hits the DB; subsequent loads of the same entity within the session are served from cache.
 - **Management:** Manual via `session.evict(entity)` or `session.clear()`.
 
-### Second-Level Cache (L2 — SessionFactory Cache)
+### Second-Level Cache (L2 - SessionFactory Cache)
 
 - **Scope:** Tied to `SessionFactory`; shared across all sessions from that factory.
 - **Default:** Disabled; must be explicitly configured.
@@ -560,7 +560,7 @@ Hibernate has three levels of caching to reduce database queries.
 ### Query Cache
 
 - Works alongside L2 cache.
-- Caches the **identifiers** of entities returned by a query (not the entities themselves — those are in L2).
+- Caches the **identifiers** of entities returned by a query (not the entities themselves - those are in L2).
 - Useful for frequently repeated queries with identical parameters.
 - Must be explicitly enabled: `hibernate.cache.use_query_cache=true` and `query.setCacheable(true)`.
 
@@ -581,7 +581,7 @@ Hibernate has three levels of caching to reduce database queries.
 Used in `@Column` or `@JoinColumn` to exclude a field from SQL `UPDATE` statements.
 
 - The field is written on `INSERT` but ignored on subsequent `UPDATE`s.
-- Hibernate silently ignores changes to the field — no exception is thrown.
+- Hibernate silently ignores changes to the field - no exception is thrown.
 - The database retains the original value.
 
 ```java
@@ -624,7 +624,7 @@ private List<OrderLine> lines;
 
 ### Best Practices
 
-- **Avoid `CascadeType.ALL` unless necessary** — prefer granular types (`PERSIST`, `MERGE`) to prevent accidental deletions.
-- **`orphanRemoval = true`** — removes child entities that are no longer referenced by the parent (e.g., removed from a collection). Complements `REMOVE` but fires on de-association, not just deletion.
-- **Watch performance** — cascades on large collections can generate many SQL statements.
-- **Ideal use case** — parent-child relationships where the child's lifecycle depends entirely on the parent (e.g., `Order` → `OrderLine`).
+- **Avoid `CascadeType.ALL` unless necessary** - prefer granular types (`PERSIST`, `MERGE`) to prevent accidental deletions.
+- **`orphanRemoval = true`** - removes child entities that are no longer referenced by the parent (e.g., removed from a collection). Complements `REMOVE` but fires on de-association, not just deletion.
+- **Watch performance** - cascades on large collections can generate many SQL statements.
+- **Ideal use case** - parent-child relationships where the child's lifecycle depends entirely on the parent (e.g., `Order` → `OrderLine`).

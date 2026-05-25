@@ -15,10 +15,10 @@
 
 Can be applied to variables, method arguments, fields, methods, and classes:
 
-- **Class** — cannot be extended
-- **Method** — cannot be overridden
-- **Field** — cannot change its value after initialization
-- **Method argument / local variable** — cannot be reassigned
+- **Class** - cannot be extended
+- **Method** - cannot be overridden
+- **Field** - cannot change its value after initialization
+- **Method argument / local variable** - cannot be reassigned
 
 ---
 
@@ -55,7 +55,7 @@ Can be applied to variables, method arguments, fields, methods, and classes:
 | `!=`   | Not equals          |
 | `?:`   | Ternary operator    |
 
-> **Ternary operator** — a shorthand for simple if-else:
+> **Ternary operator** - a shorthand for simple if-else:
 > `condition ? expression1 : expression2`
 > Both expressions must be of the same type.
 
@@ -71,7 +71,7 @@ Can be applied to variables, method arguments, fields, methods, and classes:
 
 ## Interfaces
 
-- Defined with the `interface` keyword — a fully abstract contract.
+- Defined with the `interface` keyword - a fully abstract contract.
 - All methods are implicitly `public`.
 - Fields are implicitly `public static final`.
 - Since Java 8, interfaces can have `default` methods with implementations.
@@ -80,7 +80,7 @@ Can be applied to variables, method arguments, fields, methods, and classes:
 - Interfaces allow type structures without strict hierarchy.
 
 **Why can't an interface method be `final`?**  
-`final` prevents overriding, but interface methods are implicitly abstract — they *must* be overridden somewhere.
+`final` prevents overriding, but interface methods are implicitly abstract - they *must* be overridden somewhere.
 
 **Which has the highest level of abstraction?**  
 Interface > Abstract class > Class.
@@ -122,8 +122,8 @@ int fieldValue = (int) field.get(victim);
 
 Blocks of code inside a class, outside any method or constructor.
 
-- **Static** — runs once when the class is loaded by the class loader.
-- **Non-static** — runs before the constructor each time an object is created.
+- **Static** - runs once when the class is loaded by the class loader.
+- **Non-static** - runs before the constructor each time an object is created.
 - Multiple blocks execute in source order.
 - Can throw checked exceptions if all constructors declare them.
 - It Can be used in anonymous classes.
@@ -171,7 +171,7 @@ Yes. The static version belongs to the class; the non-static version belongs to 
 
 **Rules:**
 - Access modifier cannot be *narrowed* (but can be widened).
-- Return type can only be *narrowed* (covariant return — a subtype of the parent's return type).
+- Return type can only be *narrowed* (covariant return - a subtype of the parent's return type).
 - Changing argument type/count/order creates an *overload*, not an override.
 - `throws` clause: can omit, add subclasses of declared exceptions, or add `RuntimeException`s. Order doesn't matter.
 
@@ -182,13 +182,13 @@ super.method();
 ```
 
 **Can a method be both `abstract` and `static`?**  
-No — the compiler throws `"Illegal combination of modifiers: 'abstract' and 'static'"`. `abstract` means "implemented elsewhere"; `static` means "accessible by class name".
+No - the compiler throws `"Illegal combination of modifiers: 'abstract' and 'static'"`. `abstract` means "implemented elsewhere"; `static` means "accessible by class name".
 
 ---
 
 ## Types of Classes in Java
 
-- **Top-level class** — standard class; can be `abstract` or `final`
+- **Top-level class** - standard class; can be `abstract` or `final`
 - **Interface**
 - **Enum**
 - **Nested classes:**
@@ -237,7 +237,7 @@ assert booleanExpression : "message";
 
 ## Stack vs Heap
 
-> "Primitives are always on the stack" — **not quite true.**
+> "Primitives are always on the stack" - **not quite true.**
 
 - Primitive *local variables* are on the stack.
 - Primitive *fields of an object* are stored in the heap (with the object).
@@ -286,11 +286,11 @@ Garbage collection frees heap memory by removing objects with no live references
 
 ## `finalize()`
 
-Called by GC before an object is destroyed. It Can be overridden to release resources — but:
+Called by GC before an object is destroyed. It Can be overridden to release resources - but:
 
 - Not guaranteed to be called.
 - Runs in a separate `Finalizer` thread; if it hangs, it blocks the finalization queue.
-- An object can "resurrect" itself inside `finalize()` — but only once. This is an antipattern.
+- An object can "resurrect" itself inside `finalize()` - but only once. This is an antipattern.
 - **Prefer** `try-with-resources` and `Cleaner` in modern code. Deprecated since Java 9.
 
 ---
@@ -299,7 +299,7 @@ Called by GC before an object is destroyed. It Can be overridden to release reso
 
 | Type                | Description                                                                        |
 |---------------------|------------------------------------------------------------------------------------|
-| Identity            | Same type — always allowed, automatic                                              |
+| Identity            | Same type - always allowed, automatic                                              |
 | Widening primitive  | Smaller → larger (e.g., `byte → int`). Implicit, safe                              |
 | Narrowing primitive | Larger → smaller (e.g., `int → byte`). Explicit, may lose data                     |
 | Widening reference  | Subclass → superclass. Always allowed, implicit                                    |
@@ -322,7 +322,7 @@ Occurs when:
 **Rules:**
 - Exact type match required (e.g., `byte` won't autobox directly to `Short`).
 - The compiler can narrow/widen literals before boxing.
-- JVM caches `Integer` values from **-128 to 127** — same object reference returned for values in this range.
+- JVM caches `Integer` values from **-128 to 127** - same object reference returned for values in this range.
 
 ---
 
@@ -330,24 +330,24 @@ Occurs when:
 
 **Why is `String` immutable and `final`?**
 
-- **String pool** — immutability makes sharing safe.
-- **Security** — passwords, URLs, and class names cannot be tampered with.
-- **Thread safety** — safe to share across threads without synchronization.
-- **Hashing** — `hashCode()` is computed once and cached, making `String` an ideal `HashMap` key.
-- **ClassLoader** — class names must be stable.
+- **String pool** - immutability makes sharing safe.
+- **Security** - passwords, URLs, and class names cannot be tampered with.
+- **Thread safety** - safe to share across threads without synchronization.
+- **Hashing** - `hashCode()` is computed once and cached, making `String` an ideal `HashMap` key.
+- **ClassLoader** - class names must be stable.
 
 **Why prefer `char[]` over `String` for passwords?**  
 `String` stays in the pool until GC'd; you can't clear it. A `char[]` can be explicitly zeroed out after use.
 
-**`intern()`** — adds the string to the pool (or returns the existing reference if already present).
+**`intern()`** - adds the string to the pool (or returns the existing reference if already present).
 
-**`String` in `switch`** — supported since Java 7. Uses `equals()` internally, so be careful with `null`.
+**`String` in `switch`** - supported since Java 7. Uses `equals()` internally, so be careful with `null`.
 
 ### String vs StringBuffer vs StringBuilder
 
 | | Mutable | Thread-safe | Speed |
 |---|---|---|---|
-| `String` | No | Yes (immutable) | — |
+| `String` | No | Yes (immutable) | - |
 | `StringBuffer` | Yes | Yes (synchronized) | Slower |
 | `StringBuilder` | Yes | No | Faster |
 
@@ -437,11 +437,11 @@ Capabilities:
 The prime multiplier improves distribution and reduces collisions.
 
 **`instanceof` vs `getClass()`:**
-- `instanceof` — true for the class and any subclass.
-- `getClass()` — strict exact class match.
+- `instanceof` - true for the class and any subclass.
+- `getClass()` - strict exact class match.
 
 **Does `public boolean equals(MyClass that)` override `equals(Object obj)`?**  
-No — it *overloads* it (different parameter type).
+No - it *overloads* it (different parameter type).
 
 ---
 
@@ -461,9 +461,9 @@ No — it *overloads* it (different parameter type).
 | Mutable references    | References copied (shared) | References cloned recursively |
 
 **Alternatives to `clone()`:**
-- **Copy constructor** — safest and most recommended.
-- **Factory method** — static method returning a new instance.
-- **Serialization** — serialize and deserialize to get an independent copy.
+- **Copy constructor** - safest and most recommended.
+- **Factory method** - static method returning a new instance.
+- **Serialization** - serialize and deserialize to get an independent copy.
 
 ---
 
@@ -494,9 +494,9 @@ Throwable
 
 ### try-catch-finally
 
-- `try` — code that may throw.
-- `catch` — handles the exception.
-- `finally` — always runs (with or without exception), unless the JVM is forcefully killed.
+- `try` - code that may throw.
+- `catch` - handles the exception.
+- `finally` - always runs (with or without exception), unless the JVM is forcefully killed.
 - `try-finally` without `catch` is valid.
 - Since Java 7: multi-catch with `|` separator.
 - `main()` can throw exceptions; uncaught ones are handled by the JVM (stack trace printed, program exits).
@@ -523,31 +523,31 @@ Using raw types (without type parameters) is allowed but not recommended.
 
 Type parameters can be constrained using `extends` and `super`.
 
-**Upper bounded** (`<T extends Type>`) — `T` must be `Type` or a subtype of it:
+**Upper bounded** (`<T extends Type>`) - `T` must be `Type` or a subtype of it:
 
 ```java
 // Accepts Number, Integer, Double, etc.
 public <T extends Number> double sum(List<T> list) { ... }
 ```
 
-**Lower bounded** (`<T super Type>`) — `T` must be `Type` or a supertype of it. Only valid with wildcards (see below).
+**Lower bounded** (`<T super Type>`) - `T` must be `Type` or a supertype of it. Only valid with wildcards (see below).
 
 ### Wildcards (`?`)
 
-A wildcard represents an unknown type. Used in variable declarations and method parameters — **not** in class or method definitions.
+A wildcard represents an unknown type. Used in variable declarations and method parameters - **not** in class or method definitions.
 
 | Wildcard | Meaning | Use case |
 |---|---|---|
 | `<?>` | Any type (unbounded) | Read-only; only `Object` methods available |
-| `<? extends T>` | `T` or any subtype (upper bound) | Reading from a structure — **producer** |
-| `<? super T>` | `T` or any supertype (lower bound) | Writing into a structure — **consumer** |
+| `<? extends T>` | `T` or any subtype (upper bound) | Reading from a structure - **producer** |
+| `<? super T>` | `T` or any supertype (lower bound) | Writing into a structure - **consumer** |
 
 ```java
 List<? extends Number> producers = List.of(1, 2.0, 3L); // can read as Number
 List<? super Integer> consumers = new ArrayList<Number>(); // can write Integer
 ```
 
-### PECS — Producer Extends, Consumer Super
+### PECS - Producer Extends, Consumer Super
 
 A useful mnemonic for choosing the right wildcard:
 
@@ -570,7 +570,7 @@ Generic type information exists only at compile time. At runtime, the JVM erases
 - You cannot create generic arrays: `new T[]` is not allowed.
 - You cannot instantiate a type parameter directly: `new T()` is not allowed.
 ```java
-// At runtime, both are just List — this causes an "unchecked cast" warning
+// At runtime, both are just List - this causes an "unchecked cast" warning
 List<String> strings = (List<String>) someRawList;
 ```
  

@@ -6,7 +6,7 @@
 |-------------------|------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
 | Orientation       | Stream-oriented                                                                                                        | Buffer-oriented                                                                                                               |
 | Data Processing   | Reads/writes one or more bytes sequentially from/to a stream                                                           | Reads/writes data into a buffer, allowing more flexibility                                                                    |
-| Blocking Behavior | Blocking — when calling `read()` or `write()` from `java.io.*`, the thread is blocked until the operation is completed | Non-blocking — the thread can request data from a channel and receive only what is available (or nothing if no data is ready) |
+| Blocking Behavior | Blocking - when calling `read()` or `write()` from `java.io.*`, the thread is blocked until the operation is completed | Non-blocking - the thread can request data from a channel and receive only what is available (or nothing if no data is ready) |
 | Flexibility       | No caching; cannot move randomly within the data stream                                                                | Uses buffers, allowing for better control of data movement                                                                    |
 | Efficiency        | Each stream requires a separate thread for handling I/O                                                                | A single thread can monitor multiple channels using selectors, making it more efficient for handling multiple connections     |
 | Selectors         | Not available                                                                                                          | Uses selectors, enabling one thread to handle multiple channels (ideal for scalable applications)                             |
@@ -41,9 +41,9 @@ Channels behave like pipelines, allowing efficient data transfer between byte bu
 
 ## Java I/O Packages
 
-- `java.io` — Contains traditional blocking I/O classes.
-- `java.nio` — Provides non-blocking I/O (NIO) for improved performance.
-- `java.util.zip` — Contains classes for working with compressed data streams (e.g., `GZIPInputStream`, `ZipInputStream`).
+- `java.io` - Contains traditional blocking I/O classes.
+- `java.nio` - Provides non-blocking I/O (NIO) for improved performance.
+- `java.util.zip` - Contains classes for working with compressed data streams (e.g., `GZIPInputStream`, `ZipInputStream`).
 
 ### Main Stream Classes
 
@@ -75,17 +75,17 @@ Channels behave like pipelines, allowing efficient data transfer between byte bu
 
 `PushbackInputStream` is a buffered input stream that allows "unreading" bytes. It enables a program to peek ahead into the input stream before actually consuming the data. This is useful in parsing scenarios, where you may need to check an incoming byte before deciding how to process it.
 
-Key method: `unread(int b)` — pushes a byte back into the stream so that it can be read again.
+Key method: `unread(int b)` - pushes a byte back into the stream so that it can be read again.
 
 ### SequenceInputStream
 
 `SequenceInputStream` combines multiple `InputStream` objects into a single input stream. It reads from the first stream until it is exhausted, then switches to the next, and so on.
 
 Constructor options:
-- `SequenceInputStream(InputStream s1, InputStream s2)` — merges two input streams.
-- `SequenceInputStream(Enumeration<? extends InputStream> streams)` — merges multiple input streams from an `Enumeration`.
+- `SequenceInputStream(InputStream s1, InputStream s2)` - merges two input streams.
+- `SequenceInputStream(Enumeration<? extends InputStream> streams)` - merges multiple input streams from an `Enumeration`.
 
-### DataInputStream — Reading Primitive Data Types
+### DataInputStream - Reading Primitive Data Types
 
 `DataInputStream` allows reading primitive Java data types from an input byte stream.
 
@@ -216,7 +216,7 @@ The `File` class represents files and directories, allowing operations such as c
 
 ### FileFilter Interface
 
-`FileFilter` is used to test whether a file matches certain conditions. It contains a single method — `boolean accept(File pathName)` — which you implement to define your own criteria.
+`FileFilter` is used to test whether a file matches certain conditions. It contains a single method - `boolean accept(File pathName)` - which you implement to define your own criteria.
 
 ```java
 public boolean accept(final File file) {
@@ -272,15 +272,15 @@ Also supports: `read()`, `readInt()`, `write()`, `writeInt()`, and other read/wr
 
 ### Compression Output Streams
 
-- `DeflaterOutputStream` — Compresses data using the deflated algorithm.
-- `ZipOutputStream` — Compresses data in the ZIP format.
-- `GZIPOutputStream` — Compresses data using the GZIP format.
+- `DeflaterOutputStream` - Compresses data using the deflated algorithm.
+- `ZipOutputStream` - Compresses data in the ZIP format.
+- `GZIPOutputStream` - Compresses data using the GZIP format.
 
 ### Compression Input Streams
 
-- `InflaterInputStream` — Decompresses data using the deflate algorithm.
-- `ZipInputStream` — Decompresses data in the ZIP format.
-- `GZIPInputStream` — Decompresses data in the GZIP format.
+- `InflaterInputStream` - Decompresses data using the deflate algorithm.
+- `ZipInputStream` - Decompresses data in the ZIP format.
+- `GZIPInputStream` - Decompresses data in the GZIP format.
 
 ---
 

@@ -24,13 +24,13 @@ It can describe:
 
 ### Swagger
 
-Swagger is a set of open-source tools built around the OpenAPI Specification that help you design, build, document, and consume REST APIs. The ability of APIs to describe their own structure is the foundation of Swagger's power — it not only helps with design and documentation, but also with building server stubs and generating REST clients.
+Swagger is a set of open-source tools built around the OpenAPI Specification that help you design, build, document, and consume REST APIs. The ability of APIs to describe their own structure is the foundation of Swagger's power - it not only helps with design and documentation, but also with building server stubs and generating REST clients.
 
 The major Swagger tools include:
 
-- **Swagger Editor** — browser-based editor for writing OpenAPI specifications.
-- **Swagger UI** — renders OpenAPI specs as interactive API documentation.
-- **Swagger Codegen** — generates server stubs and client libraries from an OpenAPI specification.
+- **Swagger Editor** - browser-based editor for writing OpenAPI specifications.
+- **Swagger UI** - renders OpenAPI specs as interactive API documentation.
+- **Swagger Codegen** - generates server stubs and client libraries from an OpenAPI specification.
 
 ![a_sample_open_api_document_in_the_swagger_editor.png](../images/rest-api-documentation/a_sample_open_api_document_in_the_swagger_editor.png)
 
@@ -205,7 +205,7 @@ Swagger Codegen generates server stubs and client SDKs from a supplied OpenAPI d
 
 Swagger Codegen can be accessed via the Command Line Interface (codegen-cli) or the Maven/Gradle plugin. The CLI JAR can be downloaded from [Maven Central](https://search.maven.org/classic/remotecontent?filepath=io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar).
 
-Using the JAR you can generate a server stub from an OpenAPI document. This stub can be used for mocking and testing endpoints — a common scenario when the API provider has shared documentation but the consumer does not have access to the provider's infrastructure.
+Using the JAR you can generate a server stub from an OpenAPI document. This stub can be used for mocking and testing endpoints - a common scenario when the API provider has shared documentation but the consumer does not have access to the provider's infrastructure.
 
 ---
 
@@ -362,7 +362,7 @@ public class RestAssuredAPITest {
 }
 ```
 
-More information: [REST Assured Library — ToolsQA](https://www.toolsqa.com/rest-assured/rest-assured-library/)
+More information: [REST Assured Library - ToolsQA](https://www.toolsqa.com/rest-assured/rest-assured-library/)
 
 ---
 
@@ -391,4 +391,4 @@ Postman also supports writing JavaScript test scripts, with clear examples avail
 
 ![Postman3.jpg](../images/rest-api-documentation/Postman3.jpg)
 
-More information: [Postman Testing Collections — Baeldung](https://www.baeldung.com/postman-testing-collections)
+More information: [Postman Testing Collections - Baeldung](https://www.baeldung.com/postman-testing-collections)

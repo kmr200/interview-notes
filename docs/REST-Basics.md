@@ -17,18 +17,18 @@ The Richardson Maturity Model grades REST APIs by how closely they follow REST c
 | **0** | The Swamp of POX    | Single URI, single HTTP method (typically POST). No use of URIs, HTTP verbs, or HATEOAS.                                          |
 | **1** | Resources           | Different URIs per resource, but still a single HTTP verb (typically POST). Each resource has a unique URI.                       |
 | **2** | HTTP Verbs          | Different URIs and different HTTP methods (GET, POST, PUT, DELETE). No HATEOAS. This is the most common level in practice.        |
-| **3** | Hypermedia Controls | Uses HATEOAS — responses include links that guide clients to related resources, making the API self-descriptive and discoverable. |
+| **3** | Hypermedia Controls | Uses HATEOAS - responses include links that guide clients to related resources, making the API self-descriptive and discoverable. |
 
 ---
 
 ## Key Definitions
 
 ### Resource
-The key abstraction in REST — any named concept: a document, image, service, collection, or object. A resource is identified by a URI and has a type, data, relationships, and a small set of standard methods (GET, POST, PUT, DELETE).
+The key abstraction in REST - any named concept: a document, image, service, collection, or object. A resource is identified by a URI and has a type, data, relationships, and a small set of standard methods (GET, POST, PUT, DELETE).
 
-- **Singleton resource**: a single item — `/customers/{customerId}`
-- **Collection resource**: a directory of items — `/customers`
-- **Subcollection**: resources nested under another — `/customers/{customerId}/accounts`
+- **Singleton resource**: a single item - `/customers/{customerId}`
+- **Collection resource**: a directory of items - `/customers`
+- **Subcollection**: resources nested under another - `/customers/{customerId}/accounts`
 
 ### Resource State
 The current state of a resource on the server at any point in time. What the server returns in a response is called a **resource representation**.
@@ -37,7 +37,7 @@ The current state of a resource on the server at any point in time. What the ser
 The same resource can be represented in multiple formats (JSON, XML, YAML, etc.). Clients use content negotiation (`Accept` / `Content-Type` headers) to request a specific format.
 
 ### Application State
-Server-side data that identifies a client session and its context. **Not** the same as resource state — they are completely separate concepts.
+Server-side data that identifies a client session and its context. **Not** the same as resource state - they are completely separate concepts.
 
 ### Statelessness
 Every HTTP request must contain all information needed for the server to fulfill it. The server stores no session data about the client between requests. This improves availability and scalability but increases request payload size.
@@ -46,18 +46,18 @@ Every HTTP request must contain all information needed for the server to fulfill
 A method is **idempotent** if calling it multiple times produces the same result as calling it once.
 
 ```
-a = 5;   // idempotent — result is always a = 5
-a++;     // NOT idempotent — result depends on how many times it runs
+a = 5;   // idempotent - result is always a = 5
+a++;     // NOT idempotent - result depends on how many times it runs
 ```
 
 > POST is **neither** safe nor idempotent.
 
 ### Safety
-A method is **safe** if it does not modify the resource — it only reads.
+A method is **safe** if it does not modify the resource - it only reads.
 
 ```
-x + 0;   // idempotent AND safe — no change, same result every time
-x = 5;   // idempotent but NOT safe — changes x if x ≠ 5
+x + 0;   // idempotent AND safe - no change, same result every time
+x = 5;   // idempotent but NOT safe - changes x if x ≠ 5
 ```
 
 > All safe methods are idempotent, but not all idempotent methods are safe.
@@ -93,7 +93,7 @@ Example response from `GET /management/departments/10`:
 }
 ```
 
-The client follows the `href` link to retrieve employees — the server drives navigation, not the client.
+The client follows the `href` link to retrieve employees - the server drives navigation, not the client.
 
 ---
 
@@ -104,10 +104,10 @@ Client and server must be able to evolve independently. The client knows only re
 
 ### 2. Uniform Interface
 The key constraint that distinguishes REST from non-REST. Four principles:
-- **Resource-based** — resources are identified in requests via URIs.
-- **Manipulation through representations** — the client holds enough information to modify or delete a resource.
-- **Self-descriptive messages** — each message contains enough information to describe how to process it.
-- **HATEOAS** — responses include links for the client to discover related resources.
+- **Resource-based** - resources are identified in requests via URIs.
+- **Manipulation through representations** - the client holds enough information to modify or delete a resource.
+- **Self-descriptive messages** - each message contains enough information to describe how to process it.
+- **HATEOAS** - responses include links for the client to discover related resources.
 
 ### 3. Stateless
 The server stores no client session data. Every request is self-contained. Authentication credentials must be sent with every request. Improves availability and scalability; a drawback is increased bandwidth usage.
@@ -151,7 +151,7 @@ GET  /device-management/getDevices
 
 | Rule                           | Good                    | Bad                                       |
 |--------------------------------|-------------------------|-------------------------------------------|
-| Use `/` for hierarchy          | `/devices/{id}/scripts` | —                                         |
+| Use `/` for hierarchy          | `/devices/{id}/scripts` | -                                         |
 | No trailing slash              | `/managed-devices`      | `/managed-devices/`                       |
 | Use hyphens for readability    | `/device-management`    | `/deviceManagement`, `/device_management` |
 | Lowercase only                 | `/my-folder/my-doc`     | `/My-Folder/my-doc`                       |
@@ -164,12 +164,12 @@ GET  /device-management/getDevices
 Use HTTP verbs to express the operation, not the URI:
 
 ```
-GET    /devices        — list all
-POST   /devices        — create new
-GET    /devices/{id}   — get one
-PUT    /devices/{id}   — full update
-PATCH  /devices/{id}   — partial update
-DELETE /devices/{id}   — delete
+GET    /devices        - list all
+POST   /devices        - create new
+GET    /devices/{id}   - get one
+PUT    /devices/{id}   - full update
+PATCH  /devices/{id}   - partial update
+DELETE /devices/{id}   - delete
 ```
 
 **Common HTTP status codes:**
@@ -192,7 +192,7 @@ DELETE /devices/{id}   — delete
 
 ### 4. Filtering, sorting, pagination, and searching
 
-All implemented as query parameters on the base resource URI — don't create new endpoints.
+All implemented as query parameters on the base resource URI - don't create new endpoints.
 
 **Filtering:**
 ```
@@ -273,12 +273,12 @@ Always return meaningful HTTP status codes and a structured error body.
 
 ### 6. Security
 
-- **Always use HTTPS** — enables simple token-based auth via HTTP Basic Auth.
-- **Hash passwords** — use PBKDF2, bcrypt, or scrypt.
-- **Never expose credentials in URIs** — API keys, tokens, and passwords in URLs are captured in logs.
-- **Consider OAuth 2.0** — for delegated third-party access.
-- **Add request timestamps** — reject requests older than a reasonable window (e.g., 30 seconds) to prevent replay attacks.
-- **Validate all input** — reject invalid requests immediately, before reaching business logic.
+- **Always use HTTPS** - enables simple token-based auth via HTTP Basic Auth.
+- **Hash passwords** - use PBKDF2, bcrypt, or scrypt.
+- **Never expose credentials in URIs** - API keys, tokens, and passwords in URLs are captured in logs.
+- **Consider OAuth 2.0** - for delegated third-party access.
+- **Add request timestamps** - reject requests older than a reasonable window (e.g., 30 seconds) to prevent replay attacks.
+- **Validate all input** - reject invalid requests immediately, before reaching business logic.
 
 ### 7. Caching
 

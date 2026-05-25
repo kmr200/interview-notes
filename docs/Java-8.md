@@ -143,19 +143,19 @@ Lambda expressions in Java do not change how exceptions work, but they interact 
 
 #### The Core Problem
 
-A lambda must conform to the functional interface it targets. If that interface's method does not declare a checked exception, the lambda body cannot throw one either — even if the operation inside naturally does.
+A lambda must conform to the functional interface it targets. If that interface's method does not declare a checked exception, the lambda body cannot throw one either - even if the operation inside naturally does.
 
 ```java
-// Compiler error — forEach expects Consumer<T>, whose accept() throws no checked exceptions
+// Compiler error - forEach expects Consumer<T>, whose accept() throws no checked exceptions
 List<String> paths = List.of("a.txt", "b.txt");
-paths.forEach(path -> Files.readAllBytes(Path.of(path))); // IOException is checked — does not compile
+paths.forEach(path -> Files.readAllBytes(Path.of(path))); // IOException is checked - does not compile
 ```
 
 ---
 
 #### Why Standard Functional Interfaces Don't Allow Checked Exceptions
 
-The built-in functional interfaces in `java.util.function` — `Function<T,R>`, `Consumer<T>`, `Supplier<T>`, `Predicate<T>`, and so on — are deliberately designed with no checked exceptions in their method contracts:
+The built-in functional interfaces in `java.util.function` - `Function<T,R>`, `Consumer<T>`, `Supplier<T>`, `Predicate<T>`, and so on - are deliberately designed with no checked exceptions in their method contracts:
 
 ```java
 @FunctionalInterface
@@ -169,9 +169,9 @@ public interface Consumer<T> {
 }
 ```
 
-This is an intentional design decision. Checked exceptions would make these interfaces much harder to compose — every `map()`, `filter()`, or `forEach()` call in a stream pipeline would require its caller to declare or handle the exception, making the Stream API nearly unusable in practice.
+This is an intentional design decision. Checked exceptions would make these interfaces much harder to compose - every `map()`, `filter()`, or `forEach()` call in a stream pipeline would require its caller to declare or handle the exception, making the Stream API nearly unusable in practice.
 
-The consequence is that **any lambda passed to a standard functional interface must either handle checked exceptions internally or wrap them as unchecked** — there is no way around this without defining your own functional interface.
+The consequence is that **any lambda passed to a standard functional interface must either handle checked exceptions internally or wrap them as unchecked** - there is no way around this without defining your own functional interface.
 
 ---
 
@@ -225,7 +225,7 @@ public static <T, R> Function<T, R> wrap(CheckedFunction<T, R> fn) {
     };
 }
 
-// Usage — clean at the call site
+// Usage - clean at the call site
 paths.stream()
      .map(wrap(path -> Files.readAllBytes(Path.of(path))))
      .forEach(bytes -> System.out.println(bytes.length));
@@ -246,7 +246,7 @@ List.of(-1, 0, 2).forEach(n -> {
 
 #### In `Stream` Pipelines
 
-Exception handling in multi-step pipelines deserves extra care. A wrapping approach or a dedicated safe-mapping method ensures that one failing element does not silently discard the rest — or that failures are handled per element rather than aborting the whole stream:
+Exception handling in multi-step pipelines deserves extra care. A wrapping approach or a dedicated safe-mapping method ensures that one failing element does not silently discard the rest - or that failures are handled per element rather than aborting the whole stream:
 
 ```java
 paths.stream()
@@ -262,7 +262,7 @@ paths.stream()
 | Try-catch inside lambda                       | Quick, one-off cases where reuse is not needed.                                |
 | Extract to helper method                      | Improving readability without introducing new abstractions.                    |
 | Custom checked functional interface + wrapper | Reusable, clean pipelines where many lambdas throw the same checked exception. |
-| Unchecked exceptions                          | Any case — no restrictions apply.                                              |
+| Unchecked exceptions                          | Any case - no restrictions apply.                                              |
 
 ### How to sort a list of strings with a lambda expression?
 
@@ -333,9 +333,9 @@ backToString.apply("123"); // "123"
 ```
 
 Primitive specializations avoid boxing overhead:
-- `DoubleFunction<R>` — takes `double`, returns `R`
-- `IntFunction<R>` — takes `int`, returns `R`
-- `LongFunction<R>` — takes `long`, returns `R`
+- `DoubleFunction<R>` - takes `double`, returns `R`
+- `IntFunction<R>` - takes `int`, returns `R`
+- `LongFunction<R>` - takes `long`, returns `R`
 
 ### `UnaryOperator<T>`, `DoubleUnaryOperator`, `IntUnaryOperator`, `LongUnaryOperator`
 
@@ -422,7 +422,7 @@ System.out.println(now.get()); // Outputs the current timestamp
 
 ### Primitive Conversion Interfaces
 
-**`_ToFunction`** — converts between primitive types:
+**`_ToFunction`** - converts between primitive types:
 
 | Functional Interface   | Parameters | Return Type | Use Case                          |
 |------------------------|------------|-------------|-----------------------------------|
@@ -433,7 +433,7 @@ System.out.println(now.get()); // Outputs the current timestamp
 | `LongToDoubleFunction` | `long`     | `double`    | Convert long to floating-point    |
 | `LongToIntFunction`    | `long`     | `int`       | Narrow long to integer            |
 
-**`ToBiFunction`** — take two inputs, return a primitive:
+**`ToBiFunction`** - take two inputs, return a primitive:
 
 | Functional Interface       | Parameters | Return Type | Use Case                         |
 |----------------------------|------------|-------------|----------------------------------|
@@ -441,7 +441,7 @@ System.out.println(now.get()); // Outputs the current timestamp
 | `ToIntBiFunction<T, U>`    | T, U       | `int`       | Operation on two inputs → int    |
 | `ToLongBiFunction<T, U>`   | T, U       | `long`      | Operation on two inputs → long   |
 
-**`ToFunction`** — single generic input, primitive return:
+**`ToFunction`** - single generic input, primitive return:
 
 | Functional Interface  | Parameters | Return Type | Use Case                 |
 |-----------------------|------------|-------------|--------------------------|
@@ -449,7 +449,7 @@ System.out.println(now.get()); // Outputs the current timestamp
 | `ToIntFunction<T>`    | T          | `int`       | Extracts an int from T   |
 | `ToLongFunction<T>`   | T          | `long`      | Extracts a long from T   |
 
-**`ObjConsumer`** — object + primitive, no return:
+**`ObjConsumer`** - object + primitive, no return:
 
 | Functional Interface   | Parameters  | Return Type | Use Case                  |
 |------------------------|-------------|-------------|---------------------------|
@@ -572,15 +572,15 @@ There are three factory methods for creating an `Optional`:
 
 | Method                       | Accepts null? | Throws on null?                 | Use when                                                 |
 |------------------------------|---------------|---------------------------------|----------------------------------------------------------|
-| `Optional.of(value)`         | No            | Yes — `NullPointerException`    | You are certain the value is non-null.                   |
-| `Optional.ofNullable(value)` | Yes           | No — returns `Optional.empty()` | The value may or may not be null.                        |
-| `Optional.empty()`           | —             | —                               | You want to explicitly represent the absence of a value. |
+| `Optional.of(value)`         | No            | Yes - `NullPointerException`    | You are certain the value is non-null.                   |
+| `Optional.ofNullable(value)` | Yes           | No - returns `Optional.empty()` | The value may or may not be null.                        |
+| `Optional.empty()`           | -             | -                               | You want to explicitly represent the absence of a value. |
 
 **`Optional.ofNullable()`** is the safe, general-purpose choice. It wraps the value if present, or returns an empty `Optional` if the value is `null`:
 
 ```java
 String value = null;
-Optional<String> opt = Optional.ofNullable(value); // Optional.empty() — no exception
+Optional<String> opt = Optional.ofNullable(value); // Optional.empty() - no exception
 ```
 
 **`Optional.of()`** will throw a `NullPointerException` immediately if the value is `null`:
@@ -592,16 +592,16 @@ Optional<String> opt = Optional.of(value); // throws NullPointerException
 
 #### Why does `Optional.of()` exist at all?
 
-At first glance `Optional.of()` seems counterproductive — if the goal of `Optional` is to avoid `NullPointerException`, why use a method that can throw one?
+At first glance `Optional.of()` seems counterproductive - if the goal of `Optional` is to avoid `NullPointerException`, why use a method that can throw one?
 
-The reason is **fail-fast behavior**. If you are in a situation where a `null` value would be a bug — a violated contract, a broken assumption, a programming error — you want to know about it immediately and loudly, right at the source, rather than propagating an empty `Optional` silently through the call chain and producing a confusing result somewhere downstream.
+The reason is **fail-fast behavior**. If you are in a situation where a `null` value would be a bug - a violated contract, a broken assumption, a programming error - you want to know about it immediately and loudly, right at the source, rather than propagating an empty `Optional` silently through the call chain and producing a confusing result somewhere downstream.
 
 ```java
-// Bad — null silently becomes Optional.empty(), bug is hidden
+// Bad - null silently becomes Optional.empty(), bug is hidden
 Optional<User> user = Optional.ofNullable(userRepository.getById(id));
 user.ifPresent(this::process); // just does nothing if null, no indication of a bug
 
-// Better — if getById() should never return null, enforce it immediately
+// Better - if getById() should never return null, enforce it immediately
 Optional<User> user = Optional.of(userRepository.getById(id)); // NullPointerException here if contract is violated
 user.ifPresent(this::process);
 ```
@@ -614,8 +614,8 @@ In short: use `Optional.of()` to assert that a value must not be null, and let i
 
 `java.util.Stream` represents a sequence of elements supporting various operations. Stream operations are either:
 
-- **Intermediate** — return a `Stream`, allowing method chaining.
-- **Terminal** — produce a result and close the stream.
+- **Intermediate** - return a `Stream`, allowing method chaining.
+- **Terminal** - produce a result and close the stream.
 
 **Key characteristics:**
 - Support method chaining.
@@ -654,17 +654,17 @@ These use specialized functional interfaces (`IntFunction`, `IntPredicate`, etc.
 | Concept             | A data structure (List, Set, Map).               | An abstraction for computation.                |
 | Modification        | Elements can be added/removed/updated.           | Immutable; operations don't modify the source. |
 | Reusability         | Can be iterated multiple times.                  | Single-use; closed after terminal operation.   |
-| Execution           | Eager — processes immediately.                   | Lazy — executes only on terminal operation.    |
+| Execution           | Eager - processes immediately.                   | Lazy - executes only on terminal operation.    |
 | Parallel processing | Requires explicit handling (`parallelStream()`). | Built-in support via `parallel()`.             |
 
 ### Purpose of the `collect()` Method
 
 `collect()` is a terminal operation that transforms stream elements into a collection or other data structure. It accepts a `Collector<T, A, R>` with four stages:
 
-1. **Supplier** — initializes the accumulator.
-2. **Accumulator** — processes each element.
-3. **Combiner** — merges two accumulators (for parallel execution).
-4. **Finisher** (optional) — performs final modifications.
+1. **Supplier** - initializes the accumulator.
+2. **Accumulator** - processes each element.
+3. **Combiner** - merges two accumulators (for parallel execution).
+4. **Finisher** (optional) - performs final modifications.
 
 **Common collectors:**
 
@@ -731,12 +731,12 @@ By default, `forEach()` on a parallel stream may produce results in non-determin
 
 **Factors influencing parallel stream performance:**
 
-- **Data size** — large datasets benefit more from parallelism.
-- **CPU cores** — more cores improve performance; single-core gains nothing.
-- **Data structure** — `ArrayList` is efficient (contiguous memory); `LinkedList` is not.
-- **Primitive vs. object types** — primitive operations are generally faster.
-- **Avoid blocking operations** — network calls in parallel streams can starve the shared `ForkJoinPool`.
-- **Disable ordering when not needed** — `unordered()` can improve performance:
+- **Data size** - large datasets benefit more from parallelism.
+- **CPU cores** - more cores improve performance; single-core gains nothing.
+- **Data structure** - `ArrayList` is efficient (contiguous memory); `LinkedList` is not.
+- **Primitive vs. object types** - primitive operations are generally faster.
+- **Avoid blocking operations** - network calls in parallel streams can starve the shared `ForkJoinPool`.
+- **Disable ordering when not needed** - `unordered()` can improve performance:
 
 ```java
 collection.parallelStream()
@@ -898,7 +898,7 @@ map.merge("a", "Z", (value, newValue) -> value.concat(newValue)); // "a" -> "AaZ
 
 ### What is `ZonedDateTime`?
 
-`ZonedDateTime` is the analog of `java.util.Calendar` — the most complete temporal context in ISO-8601. It includes a time zone, so all operations involving time shifts account for it.
+`ZonedDateTime` is the analog of `java.util.Calendar` - the most complete temporal context in ISO-8601. It includes a time zone, so all operations involving time shifts account for it.
 
 ### Common Date/Time Operations
 
@@ -978,9 +978,9 @@ Nashorn is a JavaScript engine developed in Java by Oracle, enabling embedding o
 `Base64` is a thread-safe class implementing an encoder and decoder per RFC 4648 and RFC 2045.
 
 **Six main methods:**
-- `getEncoder()` / `getDecoder()` — standard Base64 per RFC 4648.
-- `getUrlEncoder()` / `getUrlDecoder()` — URL-safe Base64 per RFC 4648.
-- `getMimeEncoder()` / `getMimeDecoder()` — MIME Base64 per RFC 2045.
+- `getEncoder()` / `getDecoder()` - standard Base64 per RFC 4648.
+- `getUrlEncoder()` / `getUrlDecoder()` - URL-safe Base64 per RFC 4648.
+- `getMimeEncoder()` / `getMimeDecoder()` - MIME Base64 per RFC 2045.
 
 **Encoding:**
 ```java

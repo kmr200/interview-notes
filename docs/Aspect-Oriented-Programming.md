@@ -2,7 +2,7 @@
 
 ## What is AOP?
 
-Aspect-Oriented Programming (AOP) is a programming paradigm that addresses **cross-cutting concerns** — functionality that is spread across many parts of an application and does not belong cleanly inside any single class or module.
+Aspect-Oriented Programming (AOP) is a programming paradigm that addresses **cross-cutting concerns** - functionality that is spread across many parts of an application and does not belong cleanly inside any single class or module.
 
 AOP allows you to define this shared behavior in one place (an *aspect*) and apply it declaratively across many points in the codebase, without modifying the target classes themselves. This keeps business logic clean and separates infrastructure concerns from domain logic.
 
@@ -36,7 +36,7 @@ An **aspect** is a module that encapsulates a cross-cutting concern. It combines
 
 ### Join Point
 
-A **join point** is a specific point during program execution where an aspect can be applied — for example, a method call, a method execution, or an exception being thrown. In Spring AOP, join points are always method executions.
+A **join point** is a specific point during program execution where an aspect can be applied - for example, a method call, a method execution, or an exception being thrown. In Spring AOP, join points are always method executions.
 
 ### Pointcut
 
@@ -52,7 +52,7 @@ Common pointcut designators:
 
 | Designator    | Matches                                              |
 |---------------|------------------------------------------------------|
-| `execution`   | Method execution join points — the most widely used. |
+| `execution`   | Method execution join points - the most widely used. |
 | `within`      | Join points within certain types or packages.        |
 | `@annotation` | Methods carrying a specific annotation.              |
 | `@within`     | Types carrying a specific annotation.                |
@@ -69,7 +69,7 @@ Common pointcut designators:
 | After returning | `@AfterReturning` | After the method returns successfully.                                                             |
 | After throwing  | `@AfterThrowing`  | After the method throws an exception.                                                              |
 | After (finally) | `@After`          | After the method exits, regardless of outcome.                                                     |
-| Around          | `@Around`         | Wraps the method — can run logic before and after, and control whether the method executes at all. |
+| Around          | `@Around`         | Wraps the method - can run logic before and after, and control whether the method executes at all. |
 
 ### Target Object
 
@@ -81,7 +81,7 @@ A **proxy** is an object that wraps the target and intercepts method calls to ap
 
 ### Weaving
 
-**Weaving** is the process of linking aspects with the target objects to create the advised (proxied) object. This can happen at different times in the lifecycle — see the Weaving Types section below.
+**Weaving** is the process of linking aspects with the target objects to create the advised (proxied) object. This can happen at different times in the lifecycle - see the Weaving Types section below.
 
 ---
 
@@ -91,7 +91,7 @@ Weaving is the mechanism by which aspects are applied to target code. There are 
 
 ### 1. Compile-Time Weaving (CTW)
 
-Aspect code is woven directly into the compiled bytecode **during compilation**. The output `.class` files already contain the woven aspect logic — no proxies are involved at runtime.
+Aspect code is woven directly into the compiled bytecode **during compilation**. The output `.class` files already contain the woven aspect logic - no proxies are involved at runtime.
 
 **Used by:** AspectJ (via the `ajc` compiler).
 
@@ -102,8 +102,8 @@ Woven bytecode (.class)  ← aspects baked in
 ```
 
 **Characteristics:**
-- Fastest runtime performance — no proxy overhead whatsoever.
-- Can advise any join point: constructors, field access, static methods, `private` methods — not just public method executions.
+- Fastest runtime performance - no proxy overhead whatsoever.
+- Can advise any join point: constructors, field access, static methods, `private` methods - not just public method executions.
 - Requires a special compiler (`ajc`) or a build plugin (Maven/Gradle AspectJ plugin).
 - Harder to set up and debug than proxy-based approaches.
 
@@ -119,13 +119,13 @@ Bytecode (.class) on disk  →  ClassLoader + AspectJ agent  →  Woven class in
 
 **Characteristics:**
 - Same full join point coverage as compile-time weaving (all method types, constructors, fields).
-- No need to recompile source — useful when you do not have access to source code.
+- No need to recompile source - useful when you do not have access to source code.
 - Requires JVM startup argument: `-javaagent:aspectjweaver.jar`.
 - Slight startup overhead as classes are transformed on load.
 
 ### 3. Runtime Weaving (Proxy-Based)
 
-Aspects are applied at **application startup** by wrapping target beans in proxy objects. No bytecode modification occurs — the proxy intercepts method calls and delegates to the aspect before/after calling the real object.
+Aspects are applied at **application startup** by wrapping target beans in proxy objects. No bytecode modification occurs - the proxy intercepts method calls and delegates to the aspect before/after calling the real object.
 
 **Used by:** Spring AOP (the default and only weaving mechanism in Spring AOP).
 
@@ -134,11 +134,11 @@ Target bean  →  Spring creates Proxy  →  Proxy intercepts calls  →  Advice
 ```
 
 **Characteristics:**
-- Zero additional tooling required — works with standard `javac` and the Spring container.
+- Zero additional tooling required - works with standard `javac` and the Spring container.
 - Limited to **public method executions** on **Spring-managed beans**. Cannot advise constructors, field access, private methods, or calls within the same class (self-invocation).
 - Proxy type chosen automatically:
-    - **JDK dynamic proxy** — used when the bean implements at least one interface.
-    - **CGLIB proxy** — used when the bean does not implement an interface (subclasses the target class at runtime).
+    - **JDK dynamic proxy** - used when the bean implements at least one interface.
+    - **CGLIB proxy** - used when the bean does not implement an interface (subclasses the target class at runtime).
 - Slight per-call overhead due to proxy dispatch, negligible in most applications.
 
 ---
@@ -153,13 +153,13 @@ Spring AOP and AspectJ both use the `@Aspect` annotation style, but they are fun
 | Join point support      | Public method execution only                                         | Methods, constructors, field access, static initializers, `private` methods |
 | Self-invocation         | Not intercepted (bypasses proxy)                                     | Intercepted                                                                 |
 | `private` methods       | Not intercepted                                                      | Intercepted                                                                 |
-| Spring bean requirement | Target must be a Spring bean                                         | No Spring required — works on any Java object                               |
+| Spring bean requirement | Target must be a Spring bean                                         | No Spring required - works on any Java object                               |
 | Tooling required        | None beyond Spring                                                   | `ajc` compiler or `aspectjweaver` agent                                     |
 | Performance             | Proxy dispatch overhead (negligible)                                 | No proxy overhead                                                           |
-| Complexity              | Low — works out of the box                                           | Higher — requires build/JVM configuration                                   |
+| Complexity              | Low - works out of the box                                           | Higher - requires build/JVM configuration                                   |
 | Best for                | Typical application-level concerns (logging, transactions, security) | Fine-grained, deep, or performance-critical cross-cutting concerns          |
 
-### Self-Invocation — the Key Spring AOP Limitation
+### Self-Invocation - the Key Spring AOP Limitation
 
 Because Spring AOP works through proxies, a method calling another method **on the same object** bypasses the proxy entirely and the advice is never triggered:
 
@@ -218,7 +218,7 @@ public class LoggingAspect {
 
     private static final Logger log = LoggerFactory.getLogger(LoggingAspect.class);
 
-    // Pointcut — matches all methods in the service package
+    // Pointcut - matches all methods in the service package
     @Pointcut("execution(* com.example.service.*.*(..))")
     public void serviceLayer() {}
 
@@ -228,19 +228,19 @@ public class LoggingAspect {
         log.info("Calling: {}", joinPoint.getSignature().getName());
     }
 
-    // After returning advice — captures return value
+    // After returning advice - captures return value
     @AfterReturning(pointcut = "serviceLayer()", returning = "result")
     public void logAfterReturning(JoinPoint joinPoint, Object result) {
         log.info("Returned from: {} with value: {}", joinPoint.getSignature().getName(), result);
     }
 
-    // After throwing advice — captures exception
+    // After throwing advice - captures exception
     @AfterThrowing(pointcut = "serviceLayer()", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Exception ex) {
-        log.error("Exception in: {} — {}", joinPoint.getSignature().getName(), ex.getMessage());
+        log.error("Exception in: {} - {}", joinPoint.getSignature().getName(), ex.getMessage());
     }
 
-    // Around advice — full control over method execution
+    // Around advice - full control over method execution
     @Around("serviceLayer()")
     public Object measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
@@ -324,7 +324,7 @@ Execution for the `@After` chain (unwinding): `Transaction → Logging → Secur
 | **Pointcut**              | An expression that selects which join points to advise.                                                         |
 | **Advice**                | The action to execute at a matched join point (`@Before`, `@After`, `@Around`, etc.).                           |
 | **Weaving**               | The process of applying aspects to target code.                                                                 |
-| **Compile-time weaving**  | AspectJ bakes aspect logic into bytecode at compile time — full join point coverage, best performance.          |
-| **Load-time weaving**     | AspectJ transforms bytecode as classes are loaded — full coverage without recompilation.                        |
-| **Runtime weaving**       | Spring AOP wraps beans in proxies at startup — easy setup, limited to public method executions on Spring beans. |
-| **Self-invocation**       | A known Spring AOP limitation — intra-class method calls bypass the proxy and are not advised.                  |
+| **Compile-time weaving**  | AspectJ bakes aspect logic into bytecode at compile time - full join point coverage, best performance.          |
+| **Load-time weaving**     | AspectJ transforms bytecode as classes are loaded - full coverage without recompilation.                        |
+| **Runtime weaving**       | Spring AOP wraps beans in proxies at startup - easy setup, limited to public method executions on Spring beans. |
+| **Self-invocation**       | A known Spring AOP limitation - intra-class method calls bypass the proxy and are not advised.                  |

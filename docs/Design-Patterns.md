@@ -1,6 +1,6 @@
 # Design Patterns
 
-Design patterns are typical solutions to commonly occurring problems in software design. They are blueprints that can be customized to solve a particular design problem in your code. Patterns are not code you copy — they are general concepts for solving a given problem.
+Design patterns are typical solutions to commonly occurring problems in software design. They are blueprints that can be customized to solve a particular design problem in your code. Patterns are not code you copy - they are general concepts for solving a given problem.
 
 ---
 
@@ -84,7 +84,7 @@ Produces families of related objects without specifying their concrete classes. 
 public interface Button { void render(); }
 public interface Checkbox { void render(); }
 
-// Concrete products — Windows family
+// Concrete products - Windows family
 public class WindowsButton implements Button {
     public void render() { System.out.println("Windows Button"); }
 }
@@ -92,7 +92,7 @@ public class WindowsCheckbox implements Checkbox {
     public void render() { System.out.println("Windows Checkbox"); }
 }
 
-// Concrete products — Mac family
+// Concrete products - Mac family
 public class MacButton implements Button {
     public void render() { System.out.println("Mac Button"); }
 }
@@ -117,7 +117,7 @@ public class MacFactory implements GUIFactory {
     public Checkbox createCheckbox() { return new MacCheckbox(); }
 }
 
-// Client — works with any factory through the abstract interface
+// Client - works with any factory through the abstract interface
 public class Application {
     private final Button button;
     private final Checkbox checkbox;
@@ -260,7 +260,7 @@ Ensures a class has only one instance and provides a global access point to it. 
 
 **When to use:** When exactly one object is needed to coordinate actions across the system (e.g., a database connection pool, a logger, a configuration manager).
 
-> Note: Singleton violates the Single Responsibility Principle — the class manages both its own business logic and its instantiation. Prefer dependency injection (e.g., Spring's singleton-scoped beans) over hand-rolled singletons in modern application code.
+> Note: Singleton violates the Single Responsibility Principle - the class manages both its own business logic and its instantiation. Prefer dependency injection (e.g., Spring's singleton-scoped beans) over hand-rolled singletons in modern application code.
 
 ```java
 public class DatabaseConnection {
@@ -268,7 +268,7 @@ public class DatabaseConnection {
     private static volatile DatabaseConnection instance;
 
     private DatabaseConnection() {
-        // private — prevents direct instantiation
+        // private - prevents direct instantiation
     }
 
     // Thread-safe double-checked locking
@@ -318,7 +318,7 @@ public class XmlLibrary {
     }
 }
 
-// Adapter — makes XmlLibrary look like a JsonParser
+// Adapter - makes XmlLibrary look like a JsonParser
 public class XmlToJsonAdapter implements JsonParser {
     private final XmlLibrary xmlLibrary;
 
@@ -345,8 +345,8 @@ public class XmlToJsonAdapter implements JsonParser {
 
 ![bridge.png](../images/design-patterns/bridge.png)
 
-Splits a large class or a set of closely related classes into two separate hierarchies —
-abstraction and implementation —
+Splits a large class or a set of closely related classes into two separate hierarchies -
+abstraction and implementation -
 that can be developed independently.
 Favors composition over inheritance.
 
@@ -403,7 +403,7 @@ public class Square extends Shape {
     }
 }
 
-// Usage — any shape with any renderer, independently
+// Usage - any shape with any renderer, independently
 Shape circle = new Circle(new VectorRenderer());
 circle.draw(); // Drawing Circle as vectors
 
@@ -511,7 +511,7 @@ public class ItalicDecorator extends TextDecorator {
     }
 }
 
-// Usage — decorators can be stacked in any order
+// Usage - decorators can be stacked in any order
 TextFormatter formatter = new BoldDecorator(new ItalicDecorator(new PlainText()));
 System.out.println(formatter.format("Hello")); // <b><i>Hello</i></b>
 ```
@@ -522,7 +522,7 @@ System.out.println(formatter.format("Hello")); // <b><i>Hello</i></b>
 
 ![facade.png](../images/design-patterns/facade.png)
 
-Provides a simplified interface to a complex subsystem. The facade does not forbid access to the subsystem — it just provides a convenient shortcut for the most common use cases.
+Provides a simplified interface to a complex subsystem. The facade does not forbid access to the subsystem - it just provides a convenient shortcut for the most common use cases.
 
 **When to use:** When you want to provide a simple interface to a complex subsystem, or when you want to layer your subsystems by having facades as entry points to each layer.
 
@@ -544,7 +544,7 @@ public class VideoBuffer {
     public void buffer(String file) { System.out.println("Buffering " + file); }
 }
 
-// Facade — one simple method hides the complexity
+// Facade - one simple method hides the complexity
 public class VideoPlayerFacade {
     private final VideoDecoder decoder     = new VideoDecoder();
     private final AudioMixer mixer         = new AudioMixer();
@@ -578,7 +578,7 @@ The shared state (intrinsic) is separated from the unique state (extrinsic).
 **When to use:** Only when your program must support a huge number of objects that barely fit in RAM, and when most object state can be made extrinsic (passed in from outside).
 
 ```java
-// Flyweight — stores intrinsic (shared) state
+// Flyweight - stores intrinsic (shared) state
 public class TreeType {
     private final String name;
     private final String color;
@@ -596,7 +596,7 @@ public class TreeType {
     }
 }
 
-// Flyweight factory — reuses existing flyweights
+// Flyweight factory - reuses existing flyweights
 public class TreeTypeFactory {
     private static final Map<String, TreeType> cache = new HashMap<>();
 
@@ -606,7 +606,7 @@ public class TreeTypeFactory {
     }
 }
 
-// Context — stores extrinsic (unique) state and a reference to the flyweight
+// Context - stores extrinsic (unique) state and a reference to the flyweight
 public class Tree {
     private final int x, y;
     private final TreeType type; // shared
@@ -645,7 +645,7 @@ public class RealDatabaseExecutor implements DatabaseExecutor {
     }
 }
 
-// Proxy — adds access control and logging
+// Proxy - adds access control and logging
 public class DatabaseExecutorProxy implements DatabaseExecutor {
     private final RealDatabaseExecutor executor = new RealDatabaseExecutor();
     private final String userRole;
@@ -764,7 +764,7 @@ public class WriteCommand implements Command {
     public void undo()    { editor.delete(content.length()); }
 }
 
-// Invoker — keeps history for undo
+// Invoker - keeps history for undo
 public class CommandHistory {
     private final Deque<Command> history = new ArrayDeque<>();
 
@@ -812,7 +812,7 @@ public class NumberRange implements Iterable<Integer> {
     }
 }
 
-// Usage — works with for-each because it implements Iterable
+// Usage - works with for-each because it implements Iterable
 for (int n : new NumberRange(1, 5)) {
     System.out.print(n + " "); // 1 2 3 4 5
 }
@@ -881,7 +881,7 @@ Captures and externalizes an object's internal state so it can be restored later
 **When to use:** When you need to implement undo/redo, snapshots, or state history, and you want to preserve encapsulation.
 
 ```java
-// Memento — opaque snapshot of the editor's state
+// Memento - opaque snapshot of the editor's state
 public class EditorMemento {
     private final String content;
 
@@ -959,7 +959,7 @@ public class EventManager {
 
 public class FileLogger implements EventListener {
     public void onEvent(String eventType, String data) {
-        System.out.println("[LOG] " + eventType + " — " + data);
+        System.out.println("[LOG] " + eventType + " - " + data);
     }
 }
 
@@ -1069,7 +1069,7 @@ public class Sorter {
     }
 }
 
-// Usage — swap strategies at runtime
+// Usage - swap strategies at runtime
 Sorter sorter = new Sorter(new BubbleSort());
 sorter.sort(new int[]{5, 3, 1});
 
@@ -1090,7 +1090,7 @@ Defines the skeleton of an algorithm in a base class, deferring some steps to su
 ```java
 public abstract class DataExporter {
 
-    // Template method — defines the algorithm skeleton
+    // Template method - defines the algorithm skeleton
     public final void export(String data) {
         String parsed   = parse(data);
         String formatted = format(parsed);
@@ -1154,7 +1154,7 @@ public class Rectangle implements Shape {
     public void accept(Visitor visitor) { visitor.visit(this); }
 }
 
-// Concrete visitor — new operation without touching shapes
+// Concrete visitor - new operation without touching shapes
 public class AreaCalculator implements Visitor {
     public void visit(Circle c) {
         System.out.printf("Circle area: %.2f%n", Math.PI * c.radius * c.radius);

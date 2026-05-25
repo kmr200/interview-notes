@@ -22,20 +22,20 @@ A DBMS is a set of general or specialized tools that ensure the creation, access
 
 A relational data model is a logical data model and applied theory for building relational databases. It includes three aspects:
 
-- **Structural** — data is represented as a set of relations.
-- **Integrity** — relations meet integrity conditions at the domain (data type), relation, and database levels.
-- **Processing (manipulation)** — support for relation manipulation operators (relational algebra, relational calculus).
+- **Structural** - data is represented as a set of relations.
+- **Integrity** - relations meet integrity conditions at the domain (data type), relation, and database levels.
+- **Processing (manipulation)** - support for relation manipulation operators (relational algebra, relational calculus).
 
-**Normal form** — a property of a relation characterizing it in terms of redundancy, defined as a set of requirements the relation must satisfy.
+**Normal form** - a property of a relation characterizing it in terms of redundancy, defined as a set of requirements the relation must satisfy.
 
 ---
 
 ## Define "simple," "composite," "candidate," and "alternate" key
 
-- **Simple key** — consists of a single attribute (field).
-- **Composite key** — consists of two or more attributes.
-- **Candidate key** — a simple or composite key that uniquely identifies each record. Must be irreducible: removing any field causes it to lose uniqueness.
-- **Alternate key** — any candidate key that was not selected as the primary key.
+- **Simple key** - consists of a single attribute (field).
+- **Composite key** - consists of two or more attributes.
+- **Candidate key** - a simple or composite key that uniquely identifies each record. Must be irreducible: removing any field causes it to lose uniqueness.
+- **Alternate key** - any candidate key that was not selected as the primary key.
 
 ---
 
@@ -57,7 +57,7 @@ A foreign key is a subset of attributes in relation A whose values must match th
 
 ## What is "normalization"?
 
-Normalization is the process of transforming database relations into a form compliant with normal forms — a step-by-step, reversible process of replacing a schema with one where data has a simpler and more logical structure.
+Normalization is the process of transforming database relations into a form compliant with normal forms - a step-by-step, reversible process of replacing a schema with one where data has a simpler and more logical structure.
 
 The goal is to reduce logical redundancy and minimize potential inconsistency of stored data. It is not aimed at improving performance or changing the physical size of the database.
 
@@ -65,14 +65,14 @@ The goal is to reduce logical redundancy and minimize potential inconsistency of
 
 ## What are the normal forms?
 
-- **1NF (First Normal Form)** — all attributes have atomic (indivisible) values; the table has a primary key; data is not order-dependent; no column contains mixed data types.
-- **2NF (Second Normal Form)** — satisfies 1NF; all non-key attributes depend on the *entire* key, not just part of it (relevant for composite keys).
-- **3NF (Third Normal Form)** — satisfies 2NF; no non-key attribute depends on another non-key attribute (no transitive dependencies).
-- **4NF (Fourth Normal Form)** — satisfies 3NF; contains no independent groups of attributes with a many-to-many relationship (no multivalued dependencies).
-- **5NF (Fifth Normal Form)** — satisfies 4NF; a candidate key implies every non-trivial join dependency.
-- **6NF (Sixth Normal Form)** — satisfies all non-trivial join dependencies; the relation is irreducible and cannot be further decomposed without loss. An extension of 5NF for temporal databases.
-- **BCNF (Boyce-Codd Normal Form)** — every non-trivial, irreducible functional dependency has a candidate key as its determinant. Stricter than 3NF.
-- **DKNF (Domain-Key Normal Form)** — every constraint on the relation is a logical consequence of domain constraints and key constraints.
+- **1NF (First Normal Form)** - all attributes have atomic (indivisible) values; the table has a primary key; data is not order-dependent; no column contains mixed data types.
+- **2NF (Second Normal Form)** - satisfies 1NF; all non-key attributes depend on the *entire* key, not just part of it (relevant for composite keys).
+- **3NF (Third Normal Form)** - satisfies 2NF; no non-key attribute depends on another non-key attribute (no transitive dependencies).
+- **4NF (Fourth Normal Form)** - satisfies 3NF; contains no independent groups of attributes with a many-to-many relationship (no multivalued dependencies).
+- **5NF (Fifth Normal Form)** - satisfies 4NF; a candidate key implies every non-trivial join dependency.
+- **6NF (Sixth Normal Form)** - satisfies all non-trivial join dependencies; the relation is irreducible and cannot be further decomposed without loss. An extension of 5NF for temporal databases.
+- **BCNF (Boyce-Codd Normal Form)** - every non-trivial, irreducible functional dependency has a candidate key as its determinant. Stricter than 3NF.
+- **DKNF (Domain-Key Normal Form)** - every constraint on the relation is a logical consequence of domain constraints and key constraints.
 
 ---
 
@@ -84,9 +84,9 @@ Denormalization is the deliberate process of modifying a normalized database to 
 
 ## What are the types of relationships in a database?
 
-- **One-to-One (1:1)** — each value of A corresponds to exactly one value of B, and vice versa. Example: each university has exactly one rector.
-- **One-to-Many (1:M)** — each value of A corresponds to zero, one, or many values of B. Example: one university has many faculties.
-- **Many-to-Many (M:N)** — each value of A corresponds to multiple values of B, and vice versa. Example: professors and faculties — one professor can teach at many faculties, and one faculty can have many professors.
+- **One-to-One (1:1)** - each value of A corresponds to exactly one value of B, and vice versa. Example: each university has exactly one rector.
+- **One-to-Many (1:M)** - each value of A corresponds to zero, one, or many values of B. Example: one university has many faculties.
+- **Many-to-Many (M:N)** - each value of A corresponds to multiple values of B, and vice versa. Example: professors and faculties - one professor can teach at many faculties, and one faculty can have many professors.
 
 ---
 
@@ -127,8 +127,8 @@ An index is a database object created to improve the performance of data retriev
 - Indexes on expressions
 
 **By impact on data storage:**
-- **Clustered index** — physically reorders the data on the disk to match the index. Only one clustered index can exist per table. Significantly improves performance for sequential data access (like a dictionary).
-- **Non-clustered index** — does not alter the physical data order; stores pointers (file ID, page ID, record number, column value) to the actual data rows. Multiple non-clustered indexes can exist per table.
+- **Clustered index** - physically reorders the data on the disk to match the index. Only one clustered index can exist per table. Significantly improves performance for sequential data access (like a dictionary).
+- **Non-clustered index** - does not alter the physical data order; stores pointers (file ID, page ID, record number, column value) to the actual data rows. Multiple non-clustered indexes can exist per table.
 
 **By structure:**
 - B-tree
@@ -136,45 +136,45 @@ An index is a database object created to improve the performance of data retriev
 - Hash
 
 **By number of keys:**
-- **Simple index** — built on a single field.
-- **Composite (multi-key) index** — built on multiple fields; field order matters.
-- **Index with included columns** — a non-clustered index that also stores non-key columns to cover queries without touching the base table.
-- **Primary index** — index on the primary key.
+- **Simple index** - built on a single field.
+- **Composite (multi-key) index** - built on multiple fields; field order matters.
+- **Index with included columns** - a non-clustered index that also stores non-key columns to cover queries without touching the base table.
+- **Primary index** - index on the primary key.
 
 **By content characteristics:**
-- **Unique index** — all indexed values must be unique.
-- **Dense index (NoSQL)** — every document has an index entry, even if the indexed field is absent.
-- **Sparse index (NoSQL)** — only documents where the indexed key has a defined value are included.
-- **Spatial index** — optimized for geographic data (latitude/longitude).
-- **Full-text (inverted) index** — a dictionary of all words with pointers to documents containing them; used for text search.
-- **Hash index** — stores hashes of values; reduces index size and speeds up equality lookups on large fields. Cannot be used for range queries, sorting, or null checks.
-- **Bitmap index** — uses bitmaps (0 s and 1 s) to indicate value presence; efficient for low-cardinality fields.
-- **Reverse index** — a B-tree with reversed key bytes; prevents contention on the last leaf block for monotonically increasing values (e.g., auto-increment IDs). Cannot be used for range queries.
-- **Function-based index** — stores the result of a function applied to a field (e.g., `UPPER(name)`); useful for queries on transformed values.
-- **XML index** — a materialized representation of XML BLOBs stored in XML-typed columns.
-- **Secondary index** — any index on fields other than the primary key.
+- **Unique index** - all indexed values must be unique.
+- **Dense index (NoSQL)** - every document has an index entry, even if the indexed field is absent.
+- **Sparse index (NoSQL)** - only documents where the indexed key has a defined value are included.
+- **Spatial index** - optimized for geographic data (latitude/longitude).
+- **Full-text (inverted) index** - a dictionary of all words with pointers to documents containing them; used for text search.
+- **Hash index** - stores hashes of values; reduces index size and speeds up equality lookups on large fields. Cannot be used for range queries, sorting, or null checks.
+- **Bitmap index** - uses bitmaps (0 s and 1 s) to indicate value presence; efficient for low-cardinality fields.
+- **Reverse index** - a B-tree with reversed key bytes; prevents contention on the last leaf block for monotonically increasing values (e.g., auto-increment IDs). Cannot be used for range queries.
+- **Function-based index** - stores the result of a function applied to a field (e.g., `UPPER(name)`); useful for queries on transformed values.
+- **XML index** - a materialized representation of XML BLOBs stored in XML-typed columns.
+- **Secondary index** - any index on fields other than the primary key.
 
 **By update mechanism:**
-- **Fully rebuildable** — the entire index is rebuilt when new elements are added.
-- **Incrementally updated (balanced)** — only affected branches are updated; periodic rebalancing occurs.
+- **Fully rebuildable** - the entire index is rebuilt when new elements are added.
+- **Incrementally updated (balanced)** - only affected branches are updated; periodic rebalancing occurs.
 
 **By data coverage:**
-- **Full index** — covers all data in the indexed object.
-- **Partial index** — built on a subset of data meeting a specific condition; reduces index size.
-- **Delta (incremental) index** — indexes only recently changed data (since a timestamp); used in high-write workloads alongside a periodic full rebuild.
-- **Real-time index** — a high-speed incremental index for frequently changing data.
+- **Full index** - covers all data in the indexed object.
+- **Partial index** - built on a subset of data meeting a specific condition; reduces index size.
+- **Delta (incremental) index** - indexes only recently changed data (since a timestamp); used in high-write workloads alongside a periodic full rebuild.
+- **Real-time index** - a high-speed incremental index for frequently changing data.
 
 **In clustered (sharded) systems:**
-- **Global index** — covers all shards.
-- **Segment index** — a global index on the shard key; used for query routing.
-- **Local index** — covers only a single shard.
+- **Global index** - covers all shards.
+- **Segment index** - a global index on the shard key; used for query routing.
+- **Local index** - covers only a single shard.
 
 ---
 
 ## What is the difference between clustered and non-clustered indexes?
 
-- **Clustered index** — data is physically ordered on disk according to the index. Only one per table. Significantly faster for sequential/range reads, but slower for frequent writes.
-- **Non-clustered index** — data is stored in arbitrary physical order; the index holds pointers to the actual rows. Multiple can exist per table. Better suited for frequently modified datasets.
+- **Clustered index** - data is physically ordered on disk according to the index. Only one per table. Significantly faster for sequential/range reads, but slower for frequent writes.
+- **Non-clustered index** - data is stored in arbitrary physical order; the index holds pointers to the actual rows. Multiple can exist per table. Better suited for frequently modified datasets.
 
 ---
 
@@ -203,10 +203,10 @@ A transaction is a unit of work on a database that transitions it from one consi
 
 ### What are the main properties of a transaction?
 
-- **Atomicity** — a transaction is all-or-nothing; either all sub-operations complete or none do.
-- **Consistency** — a successfully completed transaction always leaves the database in a valid, consistent state.
-- **Isolation** — concurrent transactions do not interfere with each other's results.
-- **Durability** — changes from a committed transaction persist even in the event of system failure (power loss, hardware crash, etc.).
+- **Atomicity** - a transaction is all-or-nothing; either all sub-operations complete or none do.
+- **Consistency** - a successfully completed transaction always leaves the database in a valid, consistent state.
+- **Isolation** - concurrent transactions do not interfere with each other's results.
+- **Durability** - changes from a committed transaction persist even in the event of system failure (power loss, hardware crash, etc.).
 
 ### What are the transaction isolation levels?
 
@@ -219,17 +219,17 @@ In increasing order of isolation and reliability:
 | **Repeatable Read**  | Prevented  | Prevented           | Possible     |
 | **Serializable**     | Prevented  | Prevented           | Prevented    |
 
-- **Read Uncommitted** — reads uncommitted changes from both its own and other transactions. Highly error-prone.
-- **Read Committed** — reads only committed changes from other transactions. Most common default (e.g., PostgreSQL, Oracle).
-- **Repeatable Read** — changes made by other transactions after this one started are invisible. Guarantees the same data if re-read.
-- **Serializable** — the strictest level; parallel execution produces a result logically equivalent to some sequential execution. No concurrency anomalies.
+- **Read Uncommitted** - reads uncommitted changes from both its own and other transactions. Highly error-prone.
+- **Read Committed** - reads only committed changes from other transactions. Most common default (e.g., PostgreSQL, Oracle).
+- **Repeatable Read** - changes made by other transactions after this one started are invisible. Guarantees the same data if re-read.
+- **Serializable** - the strictest level; parallel execution produces a result logically equivalent to some sequential execution. No concurrency anomalies.
 
 ### What problems can arise with parallel transaction access?
 
-- **Lost Update** — two transactions modify the same data simultaneously; one update overwrites the other.
-- **Dirty Read** — a transaction reads data modified by another transaction that later rolls back.
-- **Non-Repeatable Read** — a transaction re-reads data it already read, but another committed transaction has modified it in between.
-- **Phantom Read** — a transaction re-executes a query, but another committed transaction has inserted or deleted rows in between, producing a different result set.
+- **Lost Update** - two transactions modify the same data simultaneously; one update overwrites the other.
+- **Dirty Read** - a transaction reads data modified by another transaction that later rolls back.
+- **Non-Repeatable Read** - a transaction re-reads data it already read, but another committed transaction has modified it in between.
+- **Phantom Read** - a transaction re-executes a query, but another committed transaction has inserted or deleted rows in between, producing a different result set.
 
 **Phantom read example:**
 
@@ -255,7 +255,7 @@ Database migration tools manage the evolution of a database schema over time in 
 
 ### Why Use a Migration Tool?
 
-Without a migration tool, schema changes are applied manually and inconsistently across environments (dev, staging, production), with no record of what was applied or in what order. Migration tools solve this by treating the database schema as code — versioned, reviewable, and reproducible.
+Without a migration tool, schema changes are applied manually and inconsistently across environments (dev, staging, production), with no record of what was applied or in what order. Migration tools solve this by treating the database schema as code - versioned, reviewable, and reproducible.
 
 Key benefits:
 
@@ -385,7 +385,7 @@ public class V3__migrate_legacy_data extends BaseJavaMigration {
 
 ### Liquibase
 
-Liquibase is a more feature-rich migration tool that stores schema changes in **changelogs** — files in XML, YAML, JSON, or SQL format. Each change is described as a **changeset**, identified by an `id` and `author`. Liquibase tracks applied changes in the `DATABASECHANGELOG` table.
+Liquibase is a more feature-rich migration tool that stores schema changes in **changelogs** - files in XML, YAML, JSON, or SQL format. Each change is described as a **changeset**, identified by an `id` and `author`. Liquibase tracks applied changes in the `DATABASECHANGELOG` table.
 
 #### How Liquibase Works
 
@@ -518,9 +518,9 @@ liquibase rollbackTag v1.0       # roll back to a tagged state
 | **Ordering mechanism**       | Filename version number (`V1__`, `V2__`)        | `id` + `author` per changeset                                                        |
 | **Rollback support**         | Community edition has no undo; Pro edition does | Built-in rollback blocks                                                             |
 | **Repeatable migrations**    | `R__` prefix                                    | `runOnChange: true`                                                                  |
-| **Database-agnostic syntax** | Plain SQL — you write for your target DB        | Abstract change types auto-generate DB-specific SQL                                  |
+| **Database-agnostic syntax** | Plain SQL - you write for your target DB        | Abstract change types auto-generate DB-specific SQL                                  |
 | **Checksum validation**      | Fails on modified applied migrations            | Fails on modified applied changesets                                                 |
-| **Complexity**               | Low — minimal configuration, easy to learn      | Higher — more powerful but more verbose setup                                        |
+| **Complexity**               | Low - minimal configuration, easy to learn      | Higher - more powerful but more verbose setup                                        |
 | **Spring Boot auto-config**  | +                                               | +                                                                                    |
 | **CI/CD / CLI tooling**      | +                                               | +                                                                                    |
 | **Best for**                 | Teams that prefer plain SQL and simplicity      | Teams needing rollback support, multi-DB compatibility, or complex change management |
@@ -547,7 +547,7 @@ liquibase rollbackTag v1.0       # roll back to a tagged state
 - **Keep migrations small and focused.** One logical change per migration script or changeset makes history readable and rollback straightforward.
 - **Store migrations in version control.** Migration files are part of the codebase and should live alongside the application code they support.
 - **Test migrations against a production-like database.** Schema changes that work on H2 (in-memory) may fail on PostgreSQL or MySQL. Run migrations against a real database in CI.
-- **Use a separate migration user.** The database user that runs migrations (DDL — `CREATE`, `ALTER`, `DROP`) should be different from the application runtime user (DML — `SELECT`, `INSERT`, `UPDATE`, `DELETE`), following the principle of least privilege.
+- **Use a separate migration user.** The database user that runs migrations (DDL - `CREATE`, `ALTER`, `DROP`) should be different from the application runtime user (DML - `SELECT`, `INSERT`, `UPDATE`, `DELETE`), following the principle of least privilege.
 - **Tag releases in Liquibase.** Use `liquibase tag v1.0` before a release so you have a reliable rollback target.
 - **Coordinate migrations in teams.** When multiple developers write migrations simultaneously, version conflicts are possible. Agree on a numbering convention (e.g., timestamps like `V20240515143000__...`) to minimize collisions.
 
@@ -557,14 +557,14 @@ liquibase rollbackTag v1.0       # roll back to a tagged state
 
 The CAP theorem states that a distributed data system can guarantee at most **two** of the following three properties simultaneously:
 
-- **Consistency (C)** — every read receives the most recent write or an error.
-- **Availability (A)** — every request receives a response (not necessarily the most recent data).
-- **Partition Tolerance (P)** — the system continues operating even if network partitions cause some nodes to be unable to communicate.
+- **Consistency (C)** - every read receives the most recent write or an error.
+- **Availability (A)** - every request receives a response (not necessarily the most recent data).
+- **Partition Tolerance (P)** - the system continues operating even if network partitions cause some nodes to be unable to communicate.
 
 ![cap-theory.png](../images/databases/cap-theory.png)
 
 Since network partitions are unavoidable in real distributed systems, the practical tradeoff is between **consistency and availability** during a partition:
 
-- **CP systems** — sacrifice availability; return an error if consistency cannot be guaranteed (e.g., HBase, Zookeeper).
-- **AP systems** — sacrifice consistency; return the best available (possibly stale) data (e.g., Cassandra, CouchDB).
-- **CA systems** — only possible without network partitions; typical of single-node relational databases.
+- **CP systems** - sacrifice availability; return an error if consistency cannot be guaranteed (e.g., HBase, Zookeeper).
+- **AP systems** - sacrifice consistency; return the best available (possibly stale) data (e.g., Cassandra, CouchDB).
+- **CA systems** - only possible without network partitions; typical of single-node relational databases.

@@ -2,7 +2,7 @@
 
 ## What is a "collection"?
 
-A **collection** is a data structure — a set of certain objects. The data (objects in the set) can be numbers, strings, user-defined class objects, etc.
+A **collection** is a data structure - a set of certain objects. The data (objects in the set) can be numbers, strings, user-defined class objects, etc.
 
 ---
 
@@ -12,28 +12,28 @@ At the top of the hierarchy in the Java Collections Framework there are two inte
 
 The `Collection` interface is extended by:
 
-- **`List`** — allows duplicate values. Implementations:
-    - `ArrayList` — encapsulates a regular array whose length automatically increases when new elements are added. Elements are numbered from zero and can be accessed by index.
-    - `LinkedList` — a doubly linked list; each node contains data and references to the next and previous nodes.
-    - `Vector` — a dynamic array of objects with synchronized methods.
-    - `Stack` — a LIFO (last-in-first-out) stack implementation.
+- **`List`** - allows duplicate values. Implementations:
+    - `ArrayList` - encapsulates a regular array whose length automatically increases when new elements are added. Elements are numbered from zero and can be accessed by index.
+    - `LinkedList` - a doubly linked list; each node contains data and references to the next and previous nodes.
+    - `Vector` - a dynamic array of objects with synchronized methods.
+    - `Stack` - a LIFO (last-in-first-out) stack implementation.
 
-- **`Set`** — an unordered collection with no duplicate elements. Implementations:
-    - `HashSet` — uses a `HashMap` internally; the added element is the key, a placeholder `Object` is the value. Element order is not guaranteed.
-    - `LinkedHashSet` — iteration order matches insertion order.
-    - `TreeSet` — elements are ordered using a `Comparator` or natural ordering.
+- **`Set`** - an unordered collection with no duplicate elements. Implementations:
+    - `HashSet` - uses a `HashMap` internally; the added element is the key, a placeholder `Object` is the value. Element order is not guaranteed.
+    - `LinkedHashSet` - iteration order matches insertion order.
+    - `TreeSet` - elements are ordered using a `Comparator` or natural ordering.
 
-- **`Queue`** — stores elements with FIFO (first-in-first-out) retrieval. Implementations:
-    - `PriorityQueue` — orders elements using a `Comparator` or natural ordering.
-    - `ArrayDeque` — implements `Deque`, which extends `Queue` with LIFO support.
+- **`Queue`** - stores elements with FIFO (first-in-first-out) retrieval. Implementations:
+    - `PriorityQueue` - orders elements using a `Comparator` or natural ordering.
+    - `ArrayDeque` - implements `Deque`, which extends `Queue` with LIFO support.
 
 The `Map` interface is implemented by:
 
-- `Hashtable` — synchronized hash table; does not allow `null` keys or values; not ordered.
-- `HashMap` — hash table allowing `null` keys and values; not ordered.
-- `LinkedHashMap` — ordered hash table; iteration order matches insertion order.
-- `TreeMap` — red-black tree; ordered by natural ordering or a `Comparator`.
-- `WeakHashMap` — hash table using weak references for keys; the GC automatically removes entries when no strong references to the key remain.
+- `Hashtable` - synchronized hash table; does not allow `null` keys or values; not ordered.
+- `HashMap` - hash table allowing `null` keys and values; not ordered.
+- `LinkedHashMap` - ordered hash table; iteration order matches insertion order.
+- `TreeMap` - red-black tree; ordered by natural ordering or a `Comparator`.
+- `WeakHashMap` - hash table using weak references for keys; the GC automatically removes entries when no strong references to the key remain.
 
 ---
 
@@ -58,7 +58,7 @@ Iterator
 
 ## Why is `Map` not a `Collection` whereas `List` and `Set` are?
 
-A `Collection` is a set of individual elements. A `Map` is a set of key-value pairs — a fundamentally different concept.
+A `Collection` is a set of individual elements. A `Map` is a set of key-value pairs - a fundamentally different concept.
 
 ---
 
@@ -119,7 +119,7 @@ Classes that implement `Iterable` can be used in a `for-each` loop. Internally, 
 - `ListIterator` extends `Iterator`.
 - `ListIterator` can only be used with `List` collections.
 - `Iterator` traverses in one direction (`next()`); `ListIterator` traverses in both directions (`next()` and `previous()`).
-- `ListIterator` does not point to a specific element — its position is *between* the elements returned by `previous()` and `next()`.
+- `ListIterator` does not point to a specific element - its position is *between* the elements returned by `previous()` and `next()`.
 - `ListIterator` supports modification via `add()` and `remove()`; plain `Iterator` only supports `remove()`.
 
 ---
@@ -132,7 +132,7 @@ If the iterator is positioned at the last element, a `NoSuchElementException` is
 
 ## How many elements are skipped if `Iterator.next()` is called after ten calls to `Iterator.hasNext()`?
 
-None. `hasNext()` only checks whether a next element exists — it does not advance the iterator.
+None. `hasNext()` only checks whether a next element exists - it does not advance the iterator.
 
 ---
 
@@ -161,13 +161,13 @@ On the next call to any iterator method, a `ConcurrentModificationException` wil
 
 ## Which collection follows FIFO (First-In-First-Out)?
 
-`Queue` — elements are inserted at the tail and removed from the head.
+`Queue` - elements are inserted at the tail and removed from the head.
 
 ---
 
 ## Which collection follows FILO (First-In-Last-Out)?
 
-`Stack` — elements are inserted and removed from the top.
+`Stack` - elements are inserted and removed from the top.
 
 ---
 
@@ -187,15 +187,15 @@ On the next call to any iterator method, a `ConcurrentModificationException` wil
 - Random access by index: O(1)
 - Search by value: O(N)
 - Append at the end: O(1) amortized
-- Insert/delete at an arbitrary position: O(N) — elements must be shifted
-- Minimal memory overhead — only stores elements
+- Insert/delete at an arbitrary position: O(N) - elements must be shifted
+- Minimal memory overhead - only stores elements
 
 **`LinkedList`:**
 - Access by index or value: O(N)
 - Access to the first/last element: O(1)
 - Insert/delete at the beginning or end: O(1)
 - Insert/delete at arbitrary position: O(1) (O(N) to find the position)
-- Higher memory usage — each node stores references to previous and next
+- Higher memory usage - each node stores references to previous and next
 
 **When to use which:**
 - Use `ArrayList` when frequent random access and low-memory overhead are required.
@@ -206,7 +206,7 @@ On the next call to any iterator method, a `ConcurrentModificationException` wil
 
 ## What is the worst-case complexity of `contains()` for `LinkedList` and `ArrayList`?
 
-O(N) for both — the search is linear.
+O(N) for both - the search is linear.
 
 ---
 
@@ -284,7 +284,7 @@ Capacity is always ≥ size, so they cannot be used interchangeably. The array e
 
 `Deque` extends `Queue`.
 
-- **`Queue`** is FIFO — elements are inserted at the tail and removed from the head. Some implementations (`PriorityQueue`) don't strictly follow FIFO, using natural ordering or a comparator instead.
+- **`Queue`** is FIFO - elements are inserted at the tail and removed from the head. Some implementations (`PriorityQueue`) don't strictly follow FIFO, using natural ordering or a comparator instead.
 - **`Deque`** (Double-Ended Queue) extends `Queue` and supports insertion and removal at both ends. Implementations can behave as either FIFO (queue) or LIFO (stack).
 
 > Neither `Queue` nor `Deque` override `equals()` and `hashCode()`, so they rely on `Object`'s reference-based comparison.
@@ -299,7 +299,7 @@ Capacity is always ≥ size, so they cannot be used interchangeably. The array e
 
 ## Is `LinkedList` singly, doubly, or four-way linked?
 
-**Doubly linked** — each node stores a reference to both the previous and next node.
+**Doubly linked** - each node stores a reference to both the previous and next node.
 
 ---
 
@@ -348,7 +348,7 @@ Common use cases: Dijkstra's shortest path algorithm, task scheduling by priorit
 
 `IdentityHashMap` compares keys using **reference equality** (`==`) instead of `equals()`. It uses system identity hash codes rather than `hashCode()`, making it faster when `equals()` and `hashCode()` are expensive to compute.
 
-Use `IdentityHashMap` when **object identity matters** — for example, in serialization or cloning, where distinct instances should be treated separately even if they are logically equal.
+Use `IdentityHashMap` when **object identity matters** - for example, in serialization or cloning, where distinct instances should be treated separately even if they are logically equal.
 
 ---
 
@@ -356,7 +356,7 @@ Use `IdentityHashMap` when **object identity matters** — for example, in seria
 
 Java has four reference types: strong, soft (`SoftReference`), weak (`WeakReference`), and phantom (`PhantomReference`). If an object is reachable only through weak references, it will be marked for garbage collection.
 
-`WeakHashMap` stores keys as weak references. A key-value pair is automatically removed when no strong references to the key remain. This is useful for attaching extra information to objects you don't control — the entry disappears when the object is GC'd.
+`WeakHashMap` stores keys as weak references. A key-value pair is automatically removed when no strong references to the key remain. This is useful for attaching extra information to objects you don't control - the entry disappears when the object is GC'd.
 
 ---
 
@@ -374,13 +374,13 @@ Java has four reference types: strong, soft (`SoftReference`), weak (`WeakRefere
 
 ## What does `LinkedHashMap` inherit from `LinkedList` and from `HashMap`?
 
-`LinkedHashMap` extends `HashMap` but maintains a **doubly linked list** over its entries to define iteration order. By default, iteration follows **insertion order**. Setting the constructor parameter `accessOrder = true` switches to **access order** — calling `get()` or `put()` moves the accessed entry to the end of the list. (This is the basis for implementing an LRU cache.)
+`LinkedHashMap` extends `HashMap` but maintains a **doubly linked list** over its entries to define iteration order. By default, iteration follows **insertion order**. Setting the constructor parameter `accessOrder = true` switches to **access order** - calling `get()` or `put()` moves the accessed entry to the end of the list. (This is the basis for implementing an LRU cache.)
 
 ---
 
 ## How does the "sorted" nature of `SortedMap` manifest besides `toString()`?
 
-It also manifests during **iteration** — iterating over a `SortedMap` always yields elements in sorted key order.
+It also manifests during **iteration** - iterating over a `SortedMap` always yields elements in sorted key order.
 
 ---
 
@@ -388,7 +388,7 @@ It also manifests during **iteration** — iterating over a `SortedMap` always y
 
 ### How is `HashMap` structured?
 
-`HashMap` consists of **buckets** — elements of an array where each cell stores a reference to a linked list (or, since Java 8, a red-black tree). When adding a new key-value pair:
+`HashMap` consists of **buckets** - elements of an array where each cell stores a reference to a linked list (or, since Java 8, a red-black tree). When adding a new key-value pair:
 1. The key's hash code is computed.
 2. The bucket index is derived from the hash code.
 3. If the bucket is empty, the new entry is stored there.
@@ -396,7 +396,7 @@ It also manifests during **iteration** — iterating over a `SortedMap` always y
 
 ---
 
-### Open addressing vs. chaining — how is `HashMap` implemented and why?
+### Open addressing vs. chaining - how is `HashMap` implemented and why?
 
 `HashMap` uses **chaining** (each bucket holds a linked list). With chaining:
 - The load factor can exceed 1.
@@ -427,7 +427,7 @@ They hash to the same bucket. Since `equals()` returns `false`, the new element 
 
 Generally O(1) for insertion, lookup, and deletion. However:
 - With a good hash function: no worse than O(log N) (Java 8+ converts long chains to red-black trees).
-- Worst case (all keys hash to the same bucket): O(N) — degrades to a linked list.
+- Worst case (all keys hash to the same bucket): O(N) - degrades to a linked list.
 
 ---
 
@@ -445,7 +445,7 @@ If a key is a mutable object and a field used in `hashCode()` is modified after 
 
 ### Why can't `byte[]` be used as a key in `HashMap`?
 
-Arrays don't override `hashCode()` (computed from object identity, not contents) and don't override `equals()` (compares by reference). This means you cannot retrieve a value using a different array with the same contents — only the exact same array reference would work.
+Arrays don't override `hashCode()` (computed from object identity, not contents) and don't override `equals()` (compares by reference). This means you cannot retrieve a value using a different array with the same contents - only the exact same array reference would work.
 
 ---
 
@@ -458,7 +458,7 @@ Arrays don't override `hashCode()` (computed from object identity, not contents)
 
 ### What is the maximum number of possible `hashCode()` values?
 
-2³² — the full range of `int`.
+2³² - the full range of `int`.
 
 ---
 
@@ -466,25 +466,25 @@ Arrays don't override `hashCode()` (computed from object identity, not contents)
 
 `ConcurrentHashMap` is a thread-safe, high-performance map. The modern implementation (Java 8+) uses three strategies to minimize contention:
 
-- **Lock-free reads**: `get()` uses `volatile` field visibility — no locking required.
-- **CAS for empty buckets**: inserting into an empty bucket uses Compare-And-Swap — no lock needed.
+- **Lock-free reads**: `get()` uses `volatile` field visibility - no locking required.
+- **CAS for empty buckets**: inserting into an empty bucket uses Compare-And-Swap - no lock needed.
 - **Bucket-level synchronization**: collisions lock only the head node of the affected bucket, allowing concurrent modification of different buckets.
 
 | Feature        | Implementation Detail                                                                         |
 |----------------|-----------------------------------------------------------------------------------------------|
 | Data structure | Array of `Node` buckets; lists treeify into red-black trees when a bucket exceeds 8 elements. |
-| Locking        | Fine-grained — only the specific bucket being modified is locked.                             |
+| Locking        | Fine-grained - only the specific bucket being modified is locked.                             |
 | Iteration      | Weakly consistent iterators; do not throw `ConcurrentModificationException`.                  |
 | Null policy    | `null` keys and values are not allowed (prevents ambiguity in concurrent operations).         |
-| Resizing       | Cooperative — multiple threads assist in moving entries to the new table.                     |
+| Resizing       | Cooperative - multiple threads assist in moving entries to the new table.                     |
 
-> **Java 7 and earlier**: used segment locking (sharding) — the map was divided into 16 segments, each with its own lock. More granular than `Hashtable` but less so than modern bucket-level locking.
+> **Java 7 and earlier**: used segment locking (sharding) - the map was divided into 16 segments, each with its own lock. More granular than `Hashtable` but less so than modern bucket-level locking.
 
 ---
 
 ### What is the worst-case complexity of `HashMap.get(key)`?
 
-O(N) — when multiple keys hash to the same bucket, creating a degenerate linked list. Since Java 8, buckets exceeding a threshold (8) are converted to red-black trees, bounding worst-case to O(log N).
+O(N) - when multiple keys hash to the same bucket, creating a degenerate linked list. Since Java 8, buckets exceeding a threshold (8) are converted to red-black trees, bounding worst-case to O(log N).
 
 ---
 
@@ -499,14 +499,14 @@ A red-black tree requires element comparison. Java uses the following fallback c
 
 ### How many steps does `HashMap.get(key)` take for an existing key?
 
-- **`null` key**: 1 step — delegates to `getForNullKey()`.
-- **Non-null key**: 4 steps — compute hash, determine bucket index, search the bucket, return the value.
+- **`null` key**: 1 step - delegates to `getForNullKey()`.
+- **Non-null key**: 4 steps - compute hash, determine bucket index, search the bucket, return the value.
 
 ---
 
 ### How many new objects are created when adding a new element to `HashMap`?
 
-One — a new instance of the static nested class `Entry<K, V>` (or `Node<K, V>` in Java 8+).
+One - a new instance of the static nested class `Entry<K, V>` (or `Node<K, V>` in Java 8+).
 
 ---
 
@@ -518,8 +518,8 @@ One — a new instance of the static nested class `Entry<K, V>` (or `Node<K, V>`
 
 ### Explain the parameters of `HashMap(int initialCapacity, float loadFactor)`
 
-- `initialCapacity` — the number of buckets at creation time.
-- `loadFactor` — the ratio of stored elements to capacity at which rehashing is triggered. A lower value reduces collisions but wastes memory; a higher value saves memory but increases collision likelihood.
+- `initialCapacity` - the number of buckets at creation time.
+- `loadFactor` - the ratio of stored elements to capacity at which rehashing is triggered. A lower value reduces collisions but wastes memory; a higher value saves memory but increases collision likelihood.
 
 ---
 
@@ -560,14 +560,14 @@ for (Map.Entry<K, V> entry : map.entrySet()) {
 
 ### What are the differences between `TreeSet` and `HashSet`?
 
-- **`TreeSet`** — backed by a red-black tree; elements are always sorted. Basic operations are O(log N).
-- **`HashSet`** — backed by a `HashMap` (an element serves as both key and value); no ordering guarantee. Basic operations are O(1) on average.
+- **`TreeSet`** - backed by a red-black tree; elements are always sorted. Basic operations are O(log N).
+- **`HashSet`** - backed by a `HashMap` (an element serves as both key and value); no ordering guarantee. Basic operations are O(1) on average.
 
 ---
 
 ### What happens if elements are added to `TreeSet` in ascending order?
 
-`TreeSet` is backed by a self-balancing red-black tree, so insertion order does not matter — it always maintains its balance and performance.
+`TreeSet` is backed by a self-balancing red-black tree, so insertion order does not matter - it always maintains its balance and performance.
 
 ---
 
@@ -664,7 +664,7 @@ public static void main(String[] args) {
 ```java
 public static void main(String[] args) {
     List<Integer> list = Collections.emptyList();
-    list.add(0); // UnsupportedOperationException — the list is unmodifiable
+    list.add(0); // UnsupportedOperationException - the list is unmodifiable
 }
 ```
 

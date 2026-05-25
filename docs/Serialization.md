@@ -5,8 +5,8 @@
 Serialization is the process of converting data structures into a linear sequence of bytes for transmission or storage. The resulting bytes can later be restored via **deserialization**.
 
 In Java, there are two standard serialization mechanisms:
-- `java.io.Serializable` — standard serialization.
-- `java.io.Externalizable` — extended serialization with custom logic.
+- `java.io.Serializable` - standard serialization.
+- `java.io.Externalizable` - extended serialization with custom logic.
 
 **Changes the Java Object Serialization specification handles automatically:**
 - Adding new fields to the class.
@@ -28,7 +28,7 @@ When using `Serializable`, the serialization algorithm uses the Reflection API t
 
 Previously serialized objects are not serialized again, allowing the algorithm to handle circular references correctly.
 
-**Deserialization:** memory is allocated for the object and fields are populated from the stream. The object's own constructor is **not called**. However, the no-argument constructor of the first non-serializable parent class **will** be called — if it doesn't exist, deserialization fails with an error.
+**Deserialization:** memory is allocated for the object and fields are populated from the stream. The object's own constructor is **not called**. However, the no-argument constructor of the first non-serializable parent class **will** be called - if it doesn't exist, deserialization fails with an error.
 
 ---
 
@@ -58,7 +58,7 @@ If any of the following methods are defined, the serialization mechanism uses th
 
 ## How to Exclude Fields from Serialization?
 
-Mark the field with the `transient` keyword — it will be skipped during serialization.
+Mark the field with the `transient` keyword - it will be skipped during serialization.
 
 Typically used for:
 - Fields holding intermediate state that can be recomputed.
@@ -68,8 +68,8 @@ Typically used for:
 
 ## Effect of `static` and `final` on Serialization
 
-- **`static`** — not serialized; values remain unchanged after deserialization. Technically serializable via `Externalizable`, but not recommended due to hard-to-diagnose side effects.
-- **`final`** — serialized like ordinary fields with `Serializable`. Cannot be deserialized via `Externalizable` because `final` fields must be initialized in the constructor and cannot be set later in `readExternal()`. Use only standard serialization for classes with `final` fields.
+- **`static`** - not serialized; values remain unchanged after deserialization. Technically serializable via `Externalizable`, but not recommended due to hard-to-diagnose side effects.
+- **`final`** - serialized like ordinary fields with `Serializable`. Cannot be deserialized via `Externalizable` because `final` fields must be initialized in the constructor and cannot be set later in `readExternal()`. Use only standard serialization for classes with `final` fields.
 
 ---
 
@@ -95,7 +95,7 @@ Any attempt to serialize or deserialize the object will then throw an exception.
 
 `serialVersionUID` indicates the **version** of a serialized class. It is used during deserialization to verify that the serialized data is compatible with the current class definition.
 
-If not explicitly declared, the JVM generates it automatically based on class metadata (fields, types, access modifiers, implemented interfaces, etc.). This is fragile — adding or removing attributes can change the generated value, causing an `InvalidClassException` at runtime.
+If not explicitly declared, the JVM generates it automatically based on class metadata (fields, types, access modifiers, implemented interfaces, etc.). This is fragile - adding or removing attributes can change the generated value, causing an `InvalidClassException` at runtime.
 
 **Always declare it explicitly:**
 ```java
@@ -110,8 +110,8 @@ private static final long serialVersionUID = 20161013L;
 
 Deserializing a Singleton produces a **new, separate instance**, breaking the Singleton guarantee. Two solutions:
 
-1. **Prevent serialization entirely** — override `writeObject()`/`readObject()` to throw `NotSerializableException` (see above).
-2. **Implement `readResolve()`** — return the existing Singleton instance instead of the deserialized one:
+1. **Prevent serialization entirely** - override `writeObject()`/`readObject()` to throw `NotSerializableException` (see above).
+2. **Implement `readResolve()`** - return the existing Singleton instance instead of the deserialized one:
 
 ```java
 private Object readResolve() throws ObjectStreamException {
@@ -144,7 +144,7 @@ public class Person implements Serializable, ObjectInputValidation {
 
 To ensure data integrity and confidentiality, add signing/encryption logic in `writeObject()`/`readObject()`, or wrap the object using the standard library classes:
 
-- **`javax.crypto.SealedObject`** — encrypts the serialized object using a symmetric key.
-- **`java.security.SignedObject`** — signs the serialized object for integrity verification.
+- **`javax.crypto.SealedObject`** - encrypts the serialized object using a symmetric key.
+- **`java.security.SignedObject`** - signs the serialized object for integrity verification.
 
 Both classes are themselves `Serializable`, so they act as wrappers around the original object.

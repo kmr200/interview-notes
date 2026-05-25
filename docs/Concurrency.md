@@ -53,7 +53,7 @@ Processors and compilers may reorder instructions for performance. From another 
 
 ## Thread Safety
 
-**Thread safety** is a property of code or an object that guarantees correct behavior when accessed concurrently by multiple threads — no race conditions, no inconsistent state.
+**Thread safety** is a property of code or an object that guarantees correct behavior when accessed concurrently by multiple threads - no race conditions, no inconsistent state.
 
 ---
 
@@ -76,9 +76,9 @@ Processors and compilers may reorder instructions for performance. From another 
 
 ## Cooperative vs. Preemptive Multitasking
 
-**Cooperative multitasking** — each thread voluntarily yields control. Simple, low context-switch overhead, but one hung thread can freeze the whole system.
+**Cooperative multitasking** - each thread voluntarily yields control. Simple, low context-switch overhead, but one hung thread can freeze the whole system.
 
-**Java uses preemptive multitasking** — the OS decides when to switch threads, forcing switches at regular intervals via hardware timer interrupts. This prevents one blocked thread from stalling the system and improves responsiveness.
+**Java uses preemptive multitasking** - the OS decides when to switch threads, forcing switches at regular intervals via hardware timer interrupts. This prevents one blocked thread from stalling the system and improves responsiveness.
 
 ---
 
@@ -91,7 +91,7 @@ Processors and compilers may reorder instructions for performance. From another 
 | **Sequential Consistency** | All operations across threads appear in a single global order, as if executed one at a time.                                                                                           |
 | **Visibility**             | Defines when actions by one thread become visible to another. Without synchronization, changes may not propagate.                                                                      |
 | **Happens-Before**         | If X happens-before Y, all effects of X are visible before Y executes.                                                                                                                 |
-| **Atomicity**              | An operation is indivisible — it either completes entirely or not at all.                                                                                                              |
+| **Atomicity**              | An operation is indivisible - it either completes entirely or not at all.                                                                                                              |
 | **Mutual Exclusion**       | Only one thread at a time can access a shared resource. Implemented via `synchronized`, `Lock`, `Semaphore`.                                                                           |
 | **Safe Publication**       | Ensuring objects are correctly shared between threads. Methods: static initializers, `volatile`, `Atomic*` variables, `synchronized`, `final` fields in correctly constructed objects. |
 
@@ -102,7 +102,7 @@ Processors and compilers may reorder instructions for performance. From another 
 |               | Process                                                                   | Thread                                         |
 |---------------|---------------------------------------------------------------------------|------------------------------------------------|
 | Definition    | An independent instance of a program with its own address space.          | A lightweight execution unit within a process. |
-| Memory        | Separate address space — cannot directly access another process's memory. | Shared address space within the same process.  |
+| Memory        | Separate address space - cannot directly access another process's memory. | Shared address space within the same process.  |
 | Communication | Requires IPC (pipes, sockets, shared memory, files).                      | Direct access to shared data structures.       |
 | Creation cost | Expensive                                                                 | Much cheaper                                   |
 
@@ -124,8 +124,8 @@ Java originally supported green threads but switched to **native OS threads** in
 
 ## `Thread` vs. `Runnable`
 
-- **`Thread`** — a class that wraps a native OS thread.
-- **`Runnable`** — an interface representing a task to execute.
+- **`Thread`** - a class that wraps a native OS thread.
+- **`Runnable`** - an interface representing a task to execute.
 
 Prefer `Runnable` because:
 - Avoids the multiple-inheritance constraint (you can extend another class while implementing `Runnable`).
@@ -135,8 +135,8 @@ Prefer `Runnable` because:
 
 ## `start()` vs. `run()`
 
-- **`start()`** — creates a new thread and executes `run()` within it.
-- **`run()`** — executes in the current thread, like a regular method call. No new thread is created.
+- **`start()`** - creates a new thread and executes `run()` within it.
+- **`run()`** - executes in the current thread, like a regular method call. No new thread is created.
 
 ---
 
@@ -168,8 +168,8 @@ public static void someMethod() {
 
 | Technique                   | Description                                                                                                                                            |
 |-----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `synchronized` block/method | Mutual exclusion — only one thread executes the block at a time.                                                                                       |
-| `wait()` / `notify()`       | Thread coordination — `wait()` releases the lock and suspends; `notify()` wakes one waiting thread. Both must be called inside a `synchronized` block. |
+| `synchronized` block/method | Mutual exclusion - only one thread executes the block at a time.                                                                                       |
+| `wait()` / `notify()`       | Thread coordination - `wait()` releases the lock and suspends; `notify()` wakes one waiting thread. Both must be called inside a `synchronized` block. |
 | `join()`                    | Makes one thread wait until another thread finishes.                                                                                                   |
 | `java.util.concurrent`      | Advanced utilities: `Lock`, `Semaphore`, `Atomic*` classes, etc.                                                                                       |
 
@@ -207,7 +207,7 @@ try {
 |           | `sleep(time)`                                                         | `yield()`                                                               |
 |-----------|-----------------------------------------------------------------------|-------------------------------------------------------------------------|
 | Effect    | Moves thread from Running → Timed Waiting for the specified duration. | Moves thread from Running → Runnable, hinting the scheduler to switch.  |
-| Guarantee | Thread resumes after the sleep period (or on interrupt).              | No guarantee — the scheduler may immediately re-select the same thread. |
+| Guarantee | Thread resumes after the sleep period (or on interrupt).              | No guarantee - the scheduler may immediately re-select the same thread. |
 
 ---
 
@@ -215,10 +215,10 @@ try {
 
 A **deadlock** occurs when threads wait indefinitely for resources held by each other. Four conditions must all hold:
 
-1. **Mutual Exclusion** — at least one resource is held exclusively.
-2. **Hold and Wait** — a thread holds a resource while waiting for another.
-3. **No Preemption** — resources cannot be forcibly taken.
-4. **Circular Wait** — a circular chain of threads each waiting for the next.
+1. **Mutual Exclusion** - at least one resource is held exclusively.
+2. **Hold and Wait** - a thread holds a resource while waiting for another.
+3. **No Preemption** - resources cannot be forcibly taken.
+4. **Circular Wait** - a circular chain of threads each waiting for the next.
 
 ```java
 // Classic deadlock: t1 locks resource1 then waits for resource2;
@@ -244,7 +244,7 @@ Thread t2 = new Thread(() -> {
 
 ## Livelock
 
-A **livelock** occurs when threads continuously react to each other's state without making actual progress. Unlike deadlock, threads are not blocked — they are active but stuck in an unproductive cycle.
+A **livelock** occurs when threads continuously react to each other's state without making actual progress. Unlike deadlock, threads are not blocked - they are active but stuck in an unproductive cycle.
 
 **Prevention:**
 - Introduce randomness or backoff strategies to break the cycle.
@@ -281,7 +281,7 @@ A **race condition** is a bug where program behavior depends on the timing of th
 | Feature           | `volatile`                   | `Atomic*` (e.g., `AtomicInteger`)                 |
 |-------------------|------------------------------|---------------------------------------------------|
 | Guarantees        | Visibility only              | Visibility + Atomicity                            |
-| Atomic operations | No — `count++` is NOT atomic | Yes — `getAndIncrement()` is atomic               |
+| Atomic operations | No - `count++` is NOT atomic | Yes - `getAndIncrement()` is atomic               |
 | Use case          | Single reads/writes          | Compound operations (increment, compare-and-swap) |
 
 ---
@@ -290,7 +290,7 @@ A **race condition** is a bug where program behavior depends on the timing of th
 
 |                | `compareAndSwap()`                             | `weakCompareAndSwap()`                                                        |
 |----------------|------------------------------------------------|-------------------------------------------------------------------------------|
-| Memory barrier | Yes — establishes happens-before               | No                                                                            |
+| Memory barrier | Yes - establishes happens-before               | No                                                                            |
 | Reliability    | Always retries if expected value doesn't match | May return false spuriously                                                   |
 | Performance    | Slightly slower                                | Faster                                                                        |
 | Use when       | Strong correctness is required                 | Performance is critical and occasional failures are handled at a higher level |
@@ -317,13 +317,13 @@ thread.setDaemon(true); // must be called before start()
 boolean d = thread.isDaemon();
 ```
 
-> The main thread cannot be made a daemon — if it were, the JVM could terminate before important logic executes.
+> The main thread cannot be made a daemon - if it were, the JVM could terminate before important logic executes.
 
 ---
 
 ## How to Stop a Thread
 
-**Deprecated:** `stop()`, `suspend()`, `resume()` — removed due to deadlock risk.
+**Deprecated:** `stop()`, `suspend()`, `resume()` - removed due to deadlock risk.
 
 **Recommended: use `interrupt()`**
 
@@ -353,7 +353,7 @@ public void run() {
 public void stop() { running = false; }
 ```
 
-> Prefer `interrupt()` — a volatile flag cannot wake a blocked thread.
+> Prefer `interrupt()` - a volatile flag cannot wake a blocked thread.
 
 **Why `Thread.stop()` is dangerous:** it terminates the thread at an arbitrary point, potentially leaving shared resources in an inconsistent state, corrupting data, or causing deadlocks in waiting threads.
 
@@ -363,8 +363,8 @@ public void stop() { running = false; }
 
 | Method                 | Static | Clears the interruption flag?        |
 |------------------------|--------|--------------------------------------|
-| `Thread.interrupted()` | Yes    | Yes — resets the flag after checking |
-| `isInterrupted()`      | No     | No — only checks, does not modify    |
+| `Thread.interrupted()` | Yes    | Yes - resets the flag after checking |
+| `isInterrupted()`      | No     | No - only checks, does not modify    |
 
 ---
 
@@ -395,7 +395,7 @@ thread.setUncaughtExceptionHandler((t, e) ->
 
 ## `FutureTask`
 
-`FutureTask<V>` implements both `Future<V>` and `Runnable` — it represents a cancellable asynchronous computation.
+`FutureTask<V>` implements both `Future<V>` and `Runnable` - it represents a cancellable asynchronous computation.
 
 | Method                         | Description                            |
 |--------------------------------|----------------------------------------|
@@ -418,7 +418,7 @@ System.out.println(futureTask.get()); // blocks until done
 | Feature       | `CountDownLatch`                                                 | `CyclicBarrier`                                      |
 |---------------|------------------------------------------------------------------|------------------------------------------------------|
 | Purpose       | Wait for N operations in other threads to complete.              | Wait until N threads all reach a barrier point.      |
-| Reusable      | No — single use only.                                            | Yes — resets automatically.                          |
+| Reusable      | No - single use only.                                            | Yes - resets automatically.                          |
 | Mechanism     | `countDown()` decrements; `await()` blocks until 0.              | `await()` blocks each thread until all have arrived. |
 | On completion | No built-in action.                                              | Can run a `barrierAction` automatically.             |
 | Analogy       | Tourists wait for a set number of people before starting a tour. | Cyclists all wait at the start line before racing.   |
@@ -464,9 +464,9 @@ A thread pool manages a set of reusable worker threads, avoiding the overhead of
 
 | Feature                      | `synchronized`             | `ReentrantLock`                            |
 |------------------------------|----------------------------|--------------------------------------------|
-| Lock release                 | Automatic (JVM guarantees) | Manual — must call `unlock()` in `finally` |
+| Lock release                 | Automatic (JVM guarantees) | Manual - must call `unlock()` in `finally` |
 | Fairness                     | No                         | Optional FIFO fairness policy              |
-| Try-lock                     | No                         | `tryLock()` — avoids blocking              |
+| Try-lock                     | No                         | `tryLock()` - avoids blocking              |
 | Interruptibility             | No                         | Can be interrupted while waiting           |
 | Performance under contention | Lower                      | Higher scalability                         |
 
@@ -494,7 +494,7 @@ local.set(myObject); // stored for the current thread only
 local.get();         // returns the current thread's value
 ```
 
-> **Important:** `ThreadLocal` isolates references, not objects. If two threads' `ThreadLocal` variables point to the same object, collisions can still occur. Also, initializing a `ThreadLocal` in the main thread and reading it in another returns `null` — values are thread-specific.
+> **Important:** `ThreadLocal` isolates references, not objects. If two threads' `ThreadLocal` variables point to the same object, collisions can still occur. Also, initializing a `ThreadLocal` in the main thread and reading it in another returns `null` - values are thread-specific.
 
 ---
 
@@ -521,8 +521,8 @@ Useful for limiting access to resource pools (e.g., database connections).
 
 Introduced in JDK 7. Designed for tasks that can be recursively divided into smaller subtasks and processed in parallel.
 
-- **Fork** — split a task into subtasks; recurse until trivial.
-- **Join** — combine results of subtasks.
+- **Fork** - split a task into subtasks; recurse until trivial.
+- **Join** - combine results of subtasks.
 
 Uses a **work-stealing algorithm**: threads that finish their subtasks steal work from threads that are still busy, maximizing CPU utilization.
 
@@ -557,7 +557,7 @@ class Singleton {
 
 ## Immutable Objects
 
-Immutable objects are thread-safe without synchronization — their state never changes after construction, eliminating race conditions.
+Immutable objects are thread-safe without synchronization - their state never changes after construction, eliminating race conditions.
 
 **How to create an immutable class:**
 1. All fields must be `final`, initialized in the constructor.
@@ -594,9 +594,9 @@ Compare-And-Swap (CAS) is a low-level atomic CPU instruction used to achieve thr
 
 The operation takes three arguments:
 
-- **Memory location** — the variable to update.
-- **Expected value** — the value the variable is assumed to currently hold.
-- **New value** — the value to write if the assumption holds.
+- **Memory location** - the variable to update.
+- **Expected value** - the value the variable is assumed to currently hold.
+- **New value** - the value to write if the assumption holds.
 
 The CPU atomically checks whether the current value matches the expected value, and only then writes the new value. The entire check-and-set happens as a single, uninterruptible hardware instruction.
 
@@ -616,10 +616,10 @@ In Java, CAS is exposed through the `Atomic*` classes and, at a lower level, via
 ```java
 AtomicInteger counter = new AtomicInteger(0);
 
-// Succeeds — current value is 0, updates to 1
+// Succeeds - current value is 0, updates to 1
 boolean success = counter.compareAndSet(0, 1);
 
-// Fails — current value is now 1, not 0
+// Fails - current value is now 1, not 0
 boolean failure = counter.compareAndSet(0, 99);
 ```
 
@@ -631,7 +631,7 @@ Instead of acquiring a lock, a thread using CAS follows a retry loop:
 
 1. Read the current value.
 2. Compute the new value.
-3. Attempt CAS — if it succeeds, done.
+3. Attempt CAS - if it succeeds, done.
 4. If it fails (another thread changed the value), go back to step 1 and retry.
 
 This pattern is called an **optimistic spin loop** or **compare-and-swap loop**:
@@ -655,11 +655,11 @@ This is exactly how `AtomicInteger.incrementAndGet()` works under the hood.
 
 | Aspect                                   | Detail                                                                                                                                                                         |
 |------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **No locks**                             | Threads never block — no mutex acquisition, no context switching.                                                                                                              |
+| **No locks**                             | Threads never block - no mutex acquisition, no context switching.                                                                                                              |
 | **High throughput under low contention** | When conflicts are rare, CAS nearly always succeeds on the first try.                                                                                                          |
 | **Spin waste under high contention**     | When many threads compete on the same variable, repeated CAS failures burn CPU cycles in busy-wait loops.                                                                      |
 | **Not suitable for compound operations** | CAS protects a single memory location. Operations spanning multiple variables still require locks or other coordination.                                                       |
-| **Progress guarantee**                   | CAS provides *lock-freedom* — at least one thread always makes progress, even if others keep retrying. This is stronger than a mutex, where a sleeping thread blocks everyone. |
+| **Progress guarantee**                   | CAS provides *lock-freedom* - at least one thread always makes progress, even if others keep retrying. This is stronger than a mutex, where a sleeping thread blocks everyone. |
 | **Hardware dependency**                  | Relies on the CPU providing an atomic CAS instruction (virtually universal on modern x86/ARM).                                                                                 |
 
 **Rule of thumb:** prefer CAS-based atomics for simple, frequently-updated counters and flags under moderate contention. For high-contention scenarios, consider `LongAdder` / `LongAccumulator`, which reduce contention by striping the value across multiple cells.
@@ -674,7 +674,7 @@ The ABA problem is a subtle correctness bug that can occur when using CAS. It ha
 
 1. Thread A reads a value of **A**.
 2. Thread B changes the value from **A → B → A** (back to A).
-3. Thread A performs CAS expecting **A** — it succeeds, even though the value was changed in between.
+3. Thread A performs CAS expecting **A** - it succeeds, even though the value was changed in between.
 
 From CAS's perspective, the value looks unchanged, but the state of the system may have changed meaningfully. The operation proceeds as if nothing happened, which can lead to silent data corruption.
 
@@ -682,7 +682,7 @@ From CAS's perspective, the value looks unchanged, but the state of the system m
 
 ### Solutions to the ABA Problem
 
-#### 1. Stamped Reference — `AtomicStampedReference`
+#### 1. Stamped Reference - `AtomicStampedReference`
 
 Pairs the value with an integer **stamp** (version counter). Both the value and the stamp must match for CAS to succeed. Each write increments the stamp, making A→B→A distinguishable from an unchanged A.
 
@@ -706,7 +706,7 @@ boolean success = ref.compareAndSet(
 
 After A→B→A the stamp will be 2 (not 0), so a stale CAS expecting stamp 0 will fail correctly.
 
-#### 2. Marked Reference — `AtomicMarkableReference`
+#### 2. Marked Reference - `AtomicMarkableReference`
 
 Similar to `AtomicStampedReference` but uses a single **boolean mark** instead of an integer stamp. Useful when you only need to flag a value as logically deleted or invalid (e.g., in lock-free linked list deletion), rather than tracking a full version count.
 
@@ -740,19 +740,19 @@ so `AtomicStampedReference` is still needed in those cases.
 | Topic                     | Key Point                                                                                      |
 |---------------------------|------------------------------------------------------------------------------------------------|
 | CAS                       | Atomic hardware instruction: update a value only if it matches an expected value.              |
-| Optimistic concurrency    | No locks — threads retry on conflict instead of blocking.                                      |
+| Optimistic concurrency    | No locks - threads retry on conflict instead of blocking.                                      |
 | Low contention            | CAS is very efficient; prefer it for simple shared counters and flags.                         |
 | High contention           | Spinning wastes CPU; consider `LongAdder` or lock-based approaches.                            |
 | ABA problem               | A value can change A→B→A between a read and a CAS, causing a stale update to succeed silently. |
-| `AtomicStampedReference`  | Pairs the value with a version stamp — the canonical Java solution to ABA.                     |
-| `AtomicMarkableReference` | Uses a boolean mark instead of a stamp — suited for logical deletion patterns.                 |
+| `AtomicStampedReference`  | Pairs the value with a version stamp - the canonical Java solution to ABA.                     |
+| `AtomicMarkableReference` | Uses a boolean mark instead of a stamp - suited for logical deletion patterns.                 |
 | Java GC                   | Reduces (but does not eliminate) ABA risk by preventing premature memory reuse.                |
 
 ---
 
 ## Busy Spin
 
-A technique where a thread waits without calling `wait()`, `sleep()`, or `yield()` — instead it loops continuously:
+A technique where a thread waits without calling `wait()`, `sleep()`, or `yield()` - instead it loops continuously:
 
 ```java
 while (!conditionMet()) {
@@ -770,11 +770,11 @@ while (!conditionMet()) {
 
 When a `Callable` is submitted to an `ExecutorService`, it returns a `Future`. Calling `get()` on that `Future` **blocks** the calling thread until the result is ready. This negates the benefit of async execution:
 
-- **Thread waste** — the calling thread sits idle doing nothing.
-- **UI freezing** — in GUI or web front-ends, blocking the main thread causes unresponsiveness.
-- **Throughput reduction** — fewer requests can be handled in parallel.
-- **Cascade failures** — in microservices, a blocked thread waiting for a hung downstream service can propagate failure across the system.
-- **Infinite blocking** — without a timeout (`get(long, TimeUnit)`), the thread may block forever.
+- **Thread waste** - the calling thread sits idle doing nothing.
+- **UI freezing** - in GUI or web front-ends, blocking the main thread causes unresponsiveness.
+- **Throughput reduction** - fewer requests can be handled in parallel.
+- **Cascade failures** - in microservices, a blocked thread waiting for a hung downstream service can propagate failure across the system.
+- **Infinite blocking** - without a timeout (`get(long, TimeUnit)`), the thread may block forever.
 
 **Better alternative:** `CompletableFuture` with non-blocking callbacks (`thenApply`, `thenAccept`) that execute only when the result is ready, without blocking any thread.
 
@@ -782,12 +782,12 @@ When a `Callable` is submitted to an `ExecutorService`, it returns a `Future`. C
 
 ## Multithreading Best Practices
 
-1. **Give threads meaningful names** — `OrderProcessor` is more debuggable than `Thread-1`.
-2. **Minimize lock scope** — use `synchronized` blocks over methods to lock only what's needed.
-3. **Never ignore `InterruptedException`** — restore the interrupt flag or propagate it.
-4. **Handle exceptions in thread pools** — `ThreadPoolExecutor` swallows exceptions; wrap `Runnable` in `try-catch` or use `Thread.UncaughtExceptionHandler`.
-5. **Prefer synchronizers over `wait()`/`notify()`** — `CountDownLatch`, `Semaphore`, `CyclicBarrier` are simpler and less error-prone.
-6. **Use concurrent collections** — `ConcurrentHashMap`, `CopyOnWriteArrayList` are more scalable than `Collections.synchronizedMap()`.
+1. **Give threads meaningful names** - `OrderProcessor` is more debuggable than `Thread-1`.
+2. **Minimize lock scope** - use `synchronized` blocks over methods to lock only what's needed.
+3. **Never ignore `InterruptedException`** - restore the interrupt flag or propagate it.
+4. **Handle exceptions in thread pools** - `ThreadPoolExecutor` swallows exceptions; wrap `Runnable` in `try-catch` or use `Thread.UncaughtExceptionHandler`.
+5. **Prefer synchronizers over `wait()`/`notify()`** - `CountDownLatch`, `Semaphore`, `CyclicBarrier` are simpler and less error-prone.
+6. **Use concurrent collections** - `ConcurrentHashMap`, `CopyOnWriteArrayList` are more scalable than `Collections.synchronizedMap()`.
 
 ---
 

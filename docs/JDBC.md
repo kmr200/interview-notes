@@ -8,10 +8,10 @@ JDBC is based on the concept of drivers, which enable connections to a database 
 
 ### Advantages of JDBC
 
-- **Ease of development** — Developers do not need to know the specifics of the database they are working with.
-- **Minimal code changes when switching databases** — The amount of required modifications depends only on differences in SQL dialects.
-- **No need for additional client programs** — JDBC allows direct communication with databases without installing separate database clients.
-- **Simple connection process** — Any database can be accessed via an easily described JDBC URL.
+- **Ease of development** - Developers do not need to know the specifics of the database they are working with.
+- **Minimal code changes when switching databases** - The amount of required modifications depends only on differences in SQL dialects.
+- **No need for additional client programs** - JDBC allows direct communication with databases without installing separate database clients.
+- **Simple connection process** - Any database can be accessed via an easily described JDBC URL.
 
 ---
 
@@ -19,9 +19,9 @@ JDBC is based on the concept of drivers, which enable connections to a database 
 
 A JDBC URL consists of the following components:
 
-- `<protocol>` — Always starts with `jdbc:`.
-- `<subprotocol>` — The driver name or connection mechanism. For example, `odbc` is a common subprotocol for ODBC data sources.
-- `<subname>` — The database identifier, which varies depending on the subprotocol. It provides all necessary information for locating the database.
+- `<protocol>` - Always starts with `jdbc:`.
+- `<subprotocol>` - The driver name or connection mechanism. For example, `odbc` is a common subprotocol for ODBC data sources.
+- `<subname>` - The database identifier, which varies depending on the subprotocol. It provides all necessary information for locating the database.
 
 If the database is on the internet, the JDBC URL must include the network address:
 
@@ -29,7 +29,7 @@ If the database is on the internet, the JDBC URL must include the network addres
 jdbc:<subprotocol>://<hostname>:<port>/<subname>
 ```
 
-Example — connecting to a MySQL database named `Test` on localhost via port 3306:
+Example - connecting to a MySQL database named `Test` on localhost via port 3306:
 
 ```
 jdbc:mysql://localhost:3306/Test
@@ -41,8 +41,8 @@ jdbc:mysql://localhost:3306/Test
 
 JDBC consists of two main parts:
 
-- **JDBC API** — A set of classes and interfaces that define database access, declared in `java.sql` and `javax.sql`.
-- **JDBC Driver** — A database-specific component that translates API calls into native database commands.
+- **JDBC API** - A set of classes and interfaces that define database access, declared in `java.sql` and `javax.sql`.
+- **JDBC Driver** - A database-specific component that translates API calls into native database commands.
 
 ### Key Classes and Interfaces
 
@@ -108,19 +108,19 @@ JDBC consists of two main parts:
 
 ## 1. Registering a JDBC Driver
 
-**Option 1 — Using `DriverManager.registerDriver()`:**
+**Option 1 - Using `DriverManager.registerDriver()`:**
 
 ```java
 DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
 ```
 
-**Option 2 — Using `Class.forName()` with `newInstance()`:**
+**Option 2 - Using `Class.forName()` with `newInstance()`:**
 
 ```java
 Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 ```
 
-**Option 3 — Using `Class.forName()` (recommended):**
+**Option 3 - Using `Class.forName()` (recommended):**
 
 ```java
 Class.forName("com.mysql.cj.jdbc.Driver");
@@ -193,9 +193,9 @@ int level = conn.getTransactionIsolation();
 
 JDBC provides three interfaces for executing SQL:
 
-- `Statement` — for simple SQL statements without parameters.
-- `PreparedStatement` — for parameterized queries and frequently executed statements.
-- `CallableStatement` — for executing stored procedures.
+- `Statement` - for simple SQL statements without parameters.
+- `PreparedStatement` - for parameterized queries and frequently executed statements.
+- `CallableStatement` - for executing stored procedures.
 
 ### Creating Query Objects
 
@@ -215,7 +215,7 @@ CallableStatement cstmt = conn.prepareCall(sql);
 | Security    | Vulnerable to SQL Injection   | Prevents SQL Injection           |
 
 ```java
-// Statement (avoid for user input — SQL Injection risk)
+// Statement (avoid for user input - SQL Injection risk)
 Statement stmt = conn.createStatement();
 ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE id = " + userId);
 
@@ -229,8 +229,8 @@ ResultSet rs = pstmt.executeQuery();
 
 | Method            | Usage                                                         |
 |-------------------|---------------------------------------------------------------|
-| `executeQuery()`  | For `SELECT` queries — returns a `ResultSet`                  |
-| `executeUpdate()` | For `INSERT`, `UPDATE`, `DELETE` — returns affected row count |
+| `executeQuery()`  | For `SELECT` queries - returns a `ResultSet`                  |
+| `executeUpdate()` | For `INSERT`, `UPDATE`, `DELETE` - returns affected row count |
 | `execute()`       | For dynamic queries that may return multiple results          |
 
 ```java
@@ -249,8 +249,8 @@ System.out.println("Rows affected: " + rows);
 
 ## 5. Processing ResultSet
 
-- `next()` — moves the cursor to the next row.
-- `getString()`, `getInt()`, `getFloat()` — retrieve column values by name or index.
+- `next()` - moves the cursor to the next row.
+- `getString()`, `getInt()`, `getFloat()` - retrieve column values by name or index.
 
 ```java
 while (rs.next()) {
@@ -306,7 +306,7 @@ public void runStoredProcedure(Connection conn) throws SQLException {
 conn.close();
 ```
 
-**Try-with-resources (recommended — Java 7+):**
+**Try-with-resources (recommended - Java 7+):**
 
 ```java
 try (Connection conn = DriverManager.getConnection(url, user, password)) {
@@ -322,7 +322,7 @@ try (Connection conn = DriverManager.getConnection(url, user, password)) {
 
 ## Transaction Propagation
 
-Transaction propagation defines how transactional boundaries are managed when a transactional method calls another — determining whether the inner method joins the existing transaction or starts a new one. In Spring, it is configured via `@Transactional(propagation = ...)`.
+Transaction propagation defines how transactional boundaries are managed when a transactional method calls another - determining whether the inner method joins the existing transaction or starts a new one. In Spring, it is configured via `@Transactional(propagation = ...)`.
 
 | Type                   | Behavior                                                                                                                                                            |
 |------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
