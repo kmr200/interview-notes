@@ -307,6 +307,8 @@ Called by GC before an object is destroyed. It Can be overridden to release reso
 | To String           | Any type → `String` via `toString()`                                               |
 | Forbidden           | Between unrelated classes or between primitive and reference types (except String) |
 
+> For narrowing reference to work the object's runtime type must be assignment-compatible with the target type, which means it must be the target type itself or a subtype of it. If not, a ClassCastException is thrown. You can always check first with instanceof to avoid that.
+> 
 ---
 
 ## Autoboxing
