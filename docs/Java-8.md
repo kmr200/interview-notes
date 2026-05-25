@@ -27,8 +27,6 @@ public static void main(String[] args) {
 }
 ```
 
-Lambdas are essentially a shorter form of anonymous inner classes used previously in Java.
-
 ### Deferred Execution
 
 Lambda expressions can be defined once and executed multiple times at different locations as needed.
@@ -544,10 +542,6 @@ class Licence {
     }
 }
 ```
-
----
-
-Here's the cleaned version:
 
 ---
 
