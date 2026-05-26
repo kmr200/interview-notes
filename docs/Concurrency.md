@@ -582,10 +582,6 @@ public final class ImmutableExample {
 
 ---
 
-Here's the content you can paste into your concurrency notes:
-
----
-
 ## Compare-And-Swap (CAS)
 
 ### What is CAS?
