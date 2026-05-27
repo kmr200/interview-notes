@@ -1327,8 +1327,6 @@ Core Comparison:
 | Dependency      | javax.annotation-api            | Pure Spring framework   |
 | Best For        | Internal bean setup logic       | Third-party classes     |
 
-Here's a comparison table you can paste directly into your Spring Core notes:
-
 ---
 
 ## BeanFactory vs ApplicationContext
