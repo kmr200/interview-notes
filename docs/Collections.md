@@ -320,12 +320,35 @@ This avoids O(N²) complexity that would result from calling `get(index)` in a l
 
 ## What does `PriorityQueue` allow?
 
-`PriorityQueue` orders elements by priority rather than insertion order:
-- By default, it uses natural ordering (`Comparable`).
-- A custom `Comparator` can be provided at construction.
-- Does not allow `null` elements.
+A `PriorityQueue` is a heap-backed queue where the element with the highest priority is always at the head, regardless of insertion order. By default it's a min-heap, so the smallest element (by natural ordering) is dequeued first.
 
-Common use cases: Dijkstra's shortest path algorithm, task scheduling by priority.
+```java
+PriorityQueue<Integer> pq = new PriorityQueue<>();
+pq.offer(5);
+pq.offer(1);
+pq.offer(3);
+
+pq.poll(); // returns 1 — not 5 (insertion order is ignored)
+pq.poll(); // returns 3
+pq.poll(); // returns 5
+```
+
+To reverse the order or sort by a custom field, pass a `Comparator` to the constructor:
+
+```java
+// Max-heap: largest element dequeued first
+PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
+
+// Custom object: lowest-deadline task first
+PriorityQueue<Task> tasks = new PriorityQueue<>(Comparator.comparingLong(Task::getDeadline));
+```
+
+**A few things to know:**
+- Iteration order is undefined — only `poll()` and `peek()` respect priority.
+- `null` elements are not permitted and will throw `NullPointerException`.
+- Not thread-safe; use `PriorityBlockingQueue` for concurrent access.
+
+Common use cases: Dijkstra's algorithm, task scheduling, and any problem requiring repeated extraction of a minimum or maximum value.
 
 ---
 
