@@ -532,15 +532,57 @@ public <T extends Number> double sum(List<T> list) { ... }
 
 **Lower bounded** (`<T super Type>`) - `T` must be `Type` or a supertype of it. Only valid with wildcards (see below).
 
+### Variance
+
+Variance describes how subtype relationships between parameterized types (e.g. `List<Dog>` vs `List<Animal>`) relate to the subtype relationship between their type arguments (`Dog` vs `Animal`).
+
+**Invariant** — Java generics are invariant by default. Even if `Dog extends Animal`, `List<Dog>` is not a subtype of `List<Animal>`. The two are completely unrelated types. This is by design: if the assignment were allowed, you could insert a `Cat` through the `List<Animal>` reference and corrupt the `List<Dog>`.
+
+```java
+List<Dog> dogs = new ArrayList<>();
+List<Animal> animals = dogs; // compile error — invariant
+```
+
+**Covariant** — preserves the subtype direction. Expressed with `? extends T`. `List<? extends Animal>` accepts `List<Dog>`, `List<Cat>`, or any `List` of an `Animal` subtype. The cost: you cannot add elements (the compiler cannot know the concrete type at runtime), so you can only read.
+
+```java
+List<? extends Animal> animals = new ArrayList<Dog>(); // ok
+animals.add(new Dog()); // compile error — covariant = read-only
+Animal a = animals.get(0); // ok
+```
+
+**Contravariant** — reverses the subtype direction. Expressed with `? super T`. `List<? super Dog>` accepts `List<Dog>`, `List<Animal>`, or `List<Object>`. The cost: reads only come back as `Object`.
+
+```java
+List<? super Dog> kennel = new ArrayList<Animal>(); // ok
+kennel.add(new Dog()); // ok — contravariant = write-friendly
+Dog d = kennel.get(0); // compile error — reads as Object
+```
+
+| Variance      | Java syntax         | Subtype relation         | Can read as T      | Can write T |
+|---------------|---------------------|--------------------------|--------------------|-------------|
+| Invariant     | `List<T>`           | No relation to `List<S>` | Yes                | Yes         |
+| Covariant     | `List<? extends T>` | Direction preserved      | Yes                | No          |
+| Contravariant | `List<? super T>`   | Direction reversed       | No (only `Object`) | Yes         |
+
+![variance.png](../images/java-core/variance.png)
+
+**Note on arrays** — arrays are covariant by design (predating generics): `Dog[]` is assignable to `Animal[]`. This is unsound and throws `ArrayStoreException` at runtime. Generics chose invariance specifically to avoid this trap.
+
+```java
+Animal[] animals = new Dog[2]; // compiles — array covariance
+animals[0] = new Cat();        // ArrayStoreException at runtime
+```
+
 ### Wildcards (`?`)
 
-A wildcard represents an unknown type. Used in variable declarations and method parameters - **not** in class or method definitions.
+A wildcard represents an unknown type. Used in variable declarations and method parameters — **not** in class or method definitions.
 
 | Wildcard | Meaning | Use case |
 |---|---|---|
 | `<?>` | Any type (unbounded) | Read-only; only `Object` methods available |
-| `<? extends T>` | `T` or any subtype (upper bound) | Reading from a structure - **producer** |
-| `<? super T>` | `T` or any supertype (lower bound) | Writing into a structure - **consumer** |
+| `<? extends T>` | `T` or any subtype (upper bound) | Reading from a structure — **producer** (covariant) |
+| `<? super T>` | `T` or any supertype (lower bound) | Writing into a structure — **consumer** (contravariant) |
 
 ```java
 List<? extends Number> producers = List.of(1, 2.0, 3L); // can read as Number
@@ -549,11 +591,12 @@ List<? super Integer> consumers = new ArrayList<Number>(); // can write Integer
 
 ### PECS - Producer Extends, Consumer Super
 
-A useful mnemonic for choosing the right wildcard:
+A useful mnemonic that maps directly to variance: `? extends T` (covariant) makes a container a producer; `? super T` (contravariant) makes it a consumer.
 
 - Use `<? extends T>` when you only **read** from the collection (it produces `T`s).
 - Use `<? super T>` when you only **write** into the collection (it consumes `T`s).
 - Use `<?>` when you do neither (e.g., just printing elements).
+
 ```java
 // Copies elements from src into dst
 public <T> void copy(List<? super T> dst, List<? extends T> src) {
@@ -563,12 +606,15 @@ public <T> void copy(List<? super T> dst, List<? extends T> src) {
 
 ### Type Erasure
 
-Generic type information exists only at compile time. At runtime, the JVM erases type parameters and replaces them with their bounds (or `Object` if unbounded). This means:
+Generic type information exists only at compile time. At runtime, the JVM erases type parameters and replaces them with their bounds (or `Object` if unbounded). Variance annotations (`? extends`, `? super`) are also compile-time only — after erasure both become the raw type. This is called **use-site variance**: you declare it at each usage point, not once on the class definition (contrast with Kotlin's `out`/`in` declaration-site variance).
+
+Further consequences of erasure:
 
 - `List<String>` and `List<Integer>` are the same type at runtime (`List`).
 - You cannot use `instanceof` with parameterized types: `obj instanceof List<String>` is a compile error.
 - You cannot create generic arrays: `new T[]` is not allowed.
 - You cannot instantiate a type parameter directly: `new T()` is not allowed.
+
 ```java
 // At runtime, both are just List - this causes an "unchecked cast" warning
 List<String> strings = (List<String>) someRawList;
