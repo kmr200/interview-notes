@@ -401,6 +401,8 @@ public class TestUser {
 ```
 Autowiring can be used with any kind of DI (Setter, Constructor, Field)
 
+> **Note:** `@Autowired` on `static` fields is silently ignored by Spring. The dependency will not be injected, and no error will be thrown. If injection into a static context is needed, use a non-static setter or initialize the value via an `@PostConstruct` method. However, injecting dependencies into static contexts is often considered a design smell
+
 ## Bean scopes:
 
 Bean’s describes the way it is created. There are 6 types of scopes 4 of which are available only if you use a web-aware ApplicationContext.
