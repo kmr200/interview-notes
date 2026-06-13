@@ -112,24 +112,28 @@ Processors and compilers may reorder instructions for performance. From another 
 
 **Green threads** are threads managed by the runtime (JVM) rather than the OS. The JVM schedules them; the OS sees only one native thread.
 
-|               | Advantage                                                 | Disadvantage                                                           |
-|---------------|-----------------------------------------------------------|------------------------------------------------------------------------|
-| Green threads | Cheap to create, fast context switching, high scalability | No true parallelism; one blocking system call blocks all green threads |
+**Project Loom (Java 19+)** reintroduced lightweight **virtual threads** that solve the central weaknesses of both earlier models.
 
-Java originally supported green threads but switched to **native OS threads** in Java 1.2 to use multicore processors.
+### Comparison
 
-**Project Loom (Java 19+)** reintroduced lightweight **virtual threads** that work similarly to green threads but can run alongside native threads efficiently.
+| Property          | Green threads (Java 1.0–1.1)        | OS / native threads (Java 1.2+) | Virtual threads (Java 19+ / Loom)   |
+|-------------------|-------------------------------------|---------------------------------|-------------------------------------|
+| Managed by        | JVM / runtime                       | Operating system kernel         | JVM (mounted on carrier OS threads) |
+| Creation cost     | Very cheap                          | Expensive (~1 MB stack)         | Very cheap (~few KB)                |
+| Scalability       | Millions possible                   | Thousands at most               | Millions possible                   |
+| True parallelism  | No — single OS thread               | Yes — multi-core                | Yes — multi-core                    |
+| Blocking I/O      | Blocks all green threads            | Blocks only that thread         | JVM unmounts, carrier thread freed  |
+| Context switch    | Fast (in-process)                   | Slow (kernel mode switch)       | Fast (in-process)                   |
+| API compatibility | Custom                              | Full java.lang.Thread API       | Full java.lang.Thread API           |
+| Best suited for   | Simple, single-core concurrent apps | CPU-bound, multi-core workloads | High-concurrency I/O-bound services |
 
----
+### Key insight
 
-## `Thread` vs. `Runnable`
+- **Green threads** had cheap concurrency but no parallelism, and a single blocking syscall could stall everything.
+- **Native OS threads** gave true multi-core parallelism but at a high memory cost, capping scalability in the thousands.
+- **Virtual threads** combine the cheap creation and fast context switching of green threads with the true multi-core parallelism of OS threads. The JVM unmounts a virtual thread from its carrier OS thread the moment it would block on I/O, freeing the carrier to run another virtual thread — so the blocking problem disappears entirely.
 
-- **`Thread`** - a class that wraps a native OS thread.
-- **`Runnable`** - an interface representing a task to execute.
-
-Prefer `Runnable` because:
-- Avoids the multiple-inheritance constraint (you can extend another class while implementing `Runnable`).
-- Decouples task logic from thread management.
+The practical consequence: a server handling 100,000 concurrent connections that would have required async/reactive code with native threads can now be written with simple, synchronous blocking code using virtual threads, with no refactoring of existing `Thread`-based APIs.
 
 ---
 
