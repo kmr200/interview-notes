@@ -182,6 +182,50 @@ Both approaches depend on a registry that services register with on startup and 
 
 ---
 
+## Load Balancing
+
+Load balancing distributes incoming traffic across multiple service instances to maximize throughput, minimize latency, and avoid overloading any single instance. It operates at different layers of a microservices system — at the edge (API Gateway), between services, and within the orchestration platform.
+
+### Load Balancing Algorithms
+
+**Round Robin**
+Requests are distributed to instances in a fixed cyclic order. Simple and predictable, but takes no account of instance state — a slow or heavily loaded instance receives the same share of traffic as a healthy one. Works well when instances are homogeneous and request cost is roughly uniform.
+
+**Weighted Round Robin**
+Each instance is assigned a weight, and traffic is distributed proportionally. Useful when instances have different capacities (e.g. during a canary deployment where the new version receives 10% of traffic and the old version receives 90%).
+
+**Least Connections**
+Each new request is routed to the instance with the fewest active connections at that moment. Better than round robin when request processing time varies significantly, since it naturally directs traffic away from instances that are already busy handling long-running requests.
+
+**Least Response Time**
+Routes to the instance with the lowest combination of active connections and observed response latency. More adaptive than least connections alone, but requires the load balancer to track response time measurements per instance.
+
+**IP Hash / Consistent Hashing**
+A hash of the client's IP address (or another request attribute, such as a session ID or user ID) determines which instance handles the request. Requests from the same client consistently hit the same instance. This is useful when instance-local state matters — for example, in-memory caches or session data — but creates uneven distribution if client traffic is skewed, and requires rehashing when instances are added or removed. Consistent hashing mitigates the rehashing problem by minimizing the number of requests that change instance when the pool size changes.
+
+**Random**
+An instance is chosen at random. Counterintuitively, this performs close to round robin in aggregate due to the law of large numbers, and requires no state in the load balancer. Sometimes used as a baseline or for low-traffic internal routes.
+
+### Layer 4 vs. Layer 7 Load Balancing
+
+Load balancers operate at different levels of the network stack, and the distinction has practical consequences.
+
+**Layer 4 (Transport Layer)** load balancers route based on TCP/UDP connection metadata — source IP, destination IP, and port. They do not inspect the payload. This makes them extremely fast and suitable for raw throughput, but they cannot make routing decisions based on HTTP headers, URL paths, or cookies.
+
+**Layer 7 (Application Layer)** load balancers inspect the full HTTP request. This enables content-based routing — directing `/api/orders` to one service and `/api/customers` to another — as well as header-based routing, SSL termination, and cookie-based session affinity. The API Gateway in a microservices system is a Layer 7 load balancer. The cost is slightly higher per-request overhead compared to Layer 4.
+
+### Health Checking and Instance Removal
+
+A load balancer is only useful if it routes traffic to healthy instances. Load balancers continuously probe instances using health checks — either passive (watching for error responses on live traffic) or active (sending periodic probe requests to a health endpoint). An instance that fails a configured number of consecutive checks is removed from the pool and stops receiving traffic until it recovers.
+
+In Kubernetes, the platform's liveness and readiness probes serve this role: a pod that fails its readiness probe is removed from the Service endpoint list and receives no traffic, even if the process is still running.
+
+### Relationship to Other Patterns
+
+Load balancing does not operate in isolation. It works alongside service discovery — the load balancer needs an up-to-date list of available instances to route to, which it obtains from the service registry or the orchestration platform. It also intersects with the Circuit Breaker pattern: while the load balancer routes away from instances that fail health checks, the Circuit Breaker stops calls to a downstream service entirely when the failure rate crosses a threshold, regardless of which instance is selected.
+
+---
+
 ## Containerization and Orchestration
 
 ### Containers
