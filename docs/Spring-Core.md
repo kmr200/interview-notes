@@ -1364,4 +1364,55 @@ Both `BeanFactory` and `ApplicationContext` are Spring IoC container interfaces,
 | `AnnotationConfigWebApplicationContext` | Like the above, for web applications                            |
 | `XmlWebApplicationContext`              | Loads context from an XML file in a web application             |
 
+## Transaction Propagation
 
+Transaction propagation defines how an existing transaction behaves when a transactional method is called from another transactional method. Spring manages this through the `@Transactional` annotation and its `propagation` attribute.
+
+In Spring Boot, transaction management is auto-configured. In plain Spring, add `@EnableTransactionManagement` to your `@Configuration` class and provide a `PlatformTransactionManager` bean.
+
+### Propagation Types
+
+| Propagation     | Behavior                                                                                                                 |
+|-----------------|--------------------------------------------------------------------------------------------------------------------------|
+| `REQUIRED`      | (Default) Join the existing transaction if one exists; otherwise start a new one.                                        |
+| `REQUIRES_NEW`  | Always start a new transaction. Suspend the existing one until the new one completes.                                    |
+| `SUPPORTS`      | Join the existing transaction if one exists; run non-transactionally if there is none.                                   |
+| `NOT_SUPPORTED` | Always run non-transactionally. Suspend the existing transaction if one exists.                                          |
+| `MANDATORY`     | Join the existing transaction. Throw `IllegalTransactionStateException` if there is none.                                |
+| `NEVER`         | Run non-transactionally. Throw `IllegalTransactionStateException` if a transaction exists.                               |
+| `NESTED`        | Execute within a nested transaction (savepoint) if one exists. Falls back to `REQUIRED` behavior if there is none.      |
+
+Usage example:
+
+```java
+@Transactional // REQUIRED by default
+public void placeOrder(Order order) {
+    orderRepository.save(order);
+    paymentService.charge(order); // joins the same transaction
+}
+```
+
+```java
+@Transactional(propagation = Propagation.REQUIRES_NEW)
+public void logEvent(String event) {
+    // always runs in its own transaction - typical for audit logging
+}
+```
+
+> **Note:** `@Transactional` works via a Spring AOP proxy, so calling a transactional method from within the same bean bypasses the proxy and the annotation has no effect. Extract such methods into a separate bean to avoid this.
+
+### Rollback Behavior
+
+By default, Spring rolls back only on unchecked exceptions (`RuntimeException` and its subclasses). Checked exceptions do not trigger a rollback unless explicitly configured:
+
+```java
+@Transactional(rollbackFor = Exception.class)
+public void processPayment() throws PaymentException {
+    // rolls back on PaymentException (checked) as well
+}
+
+@Transactional(noRollbackFor = InsufficientFundsException.class)
+public void processPayment() {
+    // does NOT roll back on InsufficientFundsException even though it is a RuntimeException
+}
+```
